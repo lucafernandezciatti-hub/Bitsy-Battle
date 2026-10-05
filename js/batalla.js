@@ -2,9 +2,24 @@
 // El motor funciona también sin pantalla (modo simulación) para probar el balance.
 window.BB = window.BB || {};
 
-const ANCHO = 192, ALTO = 208;
-const COLS = [27, 73, 119, 165];
-const PISO = { rival: 86, jugador: 186 };
+// Tamaño lógico del canvas: vertical en celular, apaisado en el monitor de escritorio
+let ANCHO = 192, ALTO = 208;
+let COLS = [27, 73, 119, 165];
+let PISO = { rival: 86, jugador: 186 };
+BB.esEscritorio = () => window.matchMedia('(min-width: 900px) and (min-height: 560px)').matches;
+BB.medidasLienzo = function () {
+  if (BB.esEscritorio()) {
+    ANCHO = 256; ALTO = 224; COLS = [40, 99, 158, 217]; PISO = { rival: 94, jugador: 196 };
+  } else {
+    ANCHO = 192; ALTO = 208; COLS = [27, 73, 119, 165]; PISO = { rival: 86, jugador: 186 };
+  }
+};
+
+// Colores del canvas (los mismos que css/estilo.css)
+const C = {
+  negro: '#0B0820', claro: '#FBF8FF', gris: '#CBC4FF', naranja: '#FF8A1F', amarillo: '#FFD23F',
+  rojo: '#FF3358', verde: '#2DF58C', teal: '#19E3D0', violeta: '#C25BFF', rosa: '#FF5FB8', grilla: '#3A2D9A'
+};
 
 // multiplicador por etapas de stat (−3 … +3)
 const mult = (e) => (e >= 0 ? 1 + 0.25 * e : 1 / (1 - 0.25 * e));
@@ -104,7 +119,7 @@ BB.Batalla = class {
       const d = Math.max(1, Math.round(u.maxPv * 0.08));
       this.log(`${u.nombre}: el veneno resta ${d} PV`);
       this.sfx('estado');
-      await this.dañar(u, d, '#835E78');
+      await this.dañar(u, d, C.violeta);
       await this.pausa(450);
       if (!u.vivo) return;
     }
@@ -112,7 +127,7 @@ BB.Batalla = class {
       u.aturdido--;
       u.inmune = true; // no puede quedar aturdido dos turnos seguidos
       this.log(`${u.nombre} está aturdido y pierde el turno`);
-      this.flotar(u, 'ZZZ', '#F27827');
+      this.flotar(u, 'ZZZ', C.naranja);
       await this.pausa(750);
       return;
     }
@@ -173,7 +188,7 @@ BB.Batalla = class {
           if (!t.vivo) break;
           if (t.esquiva) {
             t.esquiva = false;
-            this.flotar(t, 'ESQUIVÓ!', '#B9C4C0');
+            this.flotar(t, 'ESQUIVÓ!', C.gris);
             this.sfx('esquiva');
             await this.pausa(380);
             continue;
@@ -181,7 +196,7 @@ BB.Batalla = class {
           const azar = 0.9 + Math.random() * 0.2;
           const d = Math.max(1, Math.round(mov.poder * BB.stat(u, 'atq') / BB.stat(t, 'def') * azar * this.degradacion()));
           this.sfx('golpe');
-          await this.dañar(t, d, '#F9F9F9');
+          await this.dañar(t, d, C.claro);
           acertados.add(t);
           await this.pausa(260);
         }
@@ -209,7 +224,7 @@ BB.Batalla = class {
       t.veneno = 0; t.aturdido = 0; t.esquiva = false;
       await this.pausa(260);
       this.sfx('ko');
-      this.flotar(t, 'KO', '#C01E2A');
+      this.flotar(t, 'KO', C.rojo);
       this.log(`${t.nombre} se desconectó`);
       await this.pausa(500);
     }
@@ -220,31 +235,31 @@ BB.Batalla = class {
       case 'cura': {
         const c = Math.min(t.maxPv - t.pv, Math.round(t.maxPv * ef.pct / 100));
         t.pv += c;
-        this.flotar(t, '+' + c, '#689274');
+        this.flotar(t, '+' + c, C.verde);
         this.sfx('cura');
         break;
       }
       case 'veneno':
         t.veneno = ef.turnos;
-        this.flotar(t, 'VENENO', '#835E78');
+        this.flotar(t, 'VENENO', C.violeta);
         this.sfx('estado');
         break;
       case 'aturdir':
-        if (t.inmune) { this.flotar(t, 'RESISTE', '#B9C4C0'); break; }
+        if (t.inmune) { this.flotar(t, 'RESISTE', C.gris); break; }
         t.aturdido = Math.max(t.aturdido, ef.turnos);
-        this.flotar(t, 'ZZZ', '#F27827');
+        this.flotar(t, 'ZZZ', C.naranja);
         this.sfx('estado');
         break;
       case 'mod': {
         t.etapas[ef.stat] = Math.max(-3, Math.min(3, t.etapas[ef.stat] + ef.cambio));
         const s = ef.stat.toUpperCase();
-        this.flotar(t, s + (ef.cambio > 0 ? '+' : '-'), ef.cambio > 0 ? '#689274' : '#C01E2A');
+        this.flotar(t, s + (ef.cambio > 0 ? '+' : '-'), ef.cambio > 0 ? C.verde : C.rojo);
         this.sfx(ef.cambio > 0 ? 'sube' : 'baja');
         break;
       }
       case 'esquiva':
         t.esquiva = true;
-        this.flotar(t, 'ESQUIVA', '#B9C4C0');
+        this.flotar(t, 'ESQUIVA', C.gris);
         break;
       case 'al_final':
         t.alFinal = true;
@@ -293,7 +308,9 @@ BB.Batalla = class {
 
   // ---------------- interfaz del jugador ----------------
   prepararPantalla() {
+    BB.medidasLienzo();
     this.cv = document.getElementById('lienzo');
+    this.cv.width = ANCHO; this.cv.height = ALTO;
     this.cx = this.cv.getContext('2d');
     this.cx.imageSmoothingEnabled = false;
     this.fondo = null;
@@ -388,20 +405,20 @@ BB.Batalla = class {
 
   dibujar() {
     const x = this.cx, t = performance.now();
-    x.fillStyle = '#0D0C12'; x.fillRect(0, 0, ANCHO, ALTO);
+    x.fillStyle = C.negro; x.fillRect(0, 0, ANCHO, ALTO);
     if (this.fondo) {
       const s = Math.max(ANCHO / this.fondo.width, ALTO / this.fondo.height);
       const w = Math.round(this.fondo.width * s), h = Math.round(this.fondo.height * s);
       x.drawImage(this.fondo, Math.round((ANCHO - w) / 2), Math.round((ALTO - h) / 2), w, h);
-      x.fillStyle = 'rgba(13,12,18,.6)'; x.fillRect(0, 0, ANCHO, ALTO);
+      x.fillStyle = 'rgba(11,8,32,.38)'; x.fillRect(0, 0, ANCHO, ALTO);
     } else { // núcleo del Virus: grilla que se mueve
-      x.strokeStyle = '#1C404E'; x.lineWidth = 1;
+      x.strokeStyle = C.grilla; x.lineWidth = 1;
       const off = Math.floor(t / 80) % 12;
       for (let i = -12; i < ANCHO + 12; i += 12) { x.beginPath(); x.moveTo(i + 0.5 + off, 0); x.lineTo(i + 0.5 + off, ALTO); x.stroke(); }
       for (let j = 0; j < ALTO; j += 12) { x.beginPath(); x.moveTo(0, j + 0.5 + off); x.lineTo(ANCHO, j + 0.5 + off); x.stroke(); }
     }
     // pisos
-    x.fillStyle = 'rgba(13,12,18,.55)';
+    x.fillStyle = 'rgba(11,8,32,.5)';
     x.fillRect(0, PISO.rival - 4, ANCHO, 16);
     x.fillRect(0, PISO.jugador - 4, ANCHO, 16);
 
@@ -436,7 +453,7 @@ BB.Batalla = class {
       // estática del desconectado
       for (let i = 0; i < 40; i++) {
         const px = dx + Math.floor(Math.random() * fuente.width), py = dy + Math.floor(Math.random() * fuente.height);
-        x.fillStyle = Math.random() < 0.5 ? '#EFEEF0' : '#54555E';
+        x.fillStyle = Math.random() < 0.5 ? C.claro : '#5B4FA8';
         x.fillRect(px, py, 1, 1);
       }
       return;
@@ -446,13 +463,13 @@ BB.Batalla = class {
 
     // turno actual: flecha
     if (this.actual === u && parpadeo) {
-      x.fillStyle = '#F27827';
+      x.fillStyle = C.naranja;
       const ty = dy - 7;
       x.fillRect(cx - 3, ty, 7, 1); x.fillRect(cx - 2, ty + 1, 5, 1); x.fillRect(cx - 1, ty + 2, 3, 1); x.fillRect(cx, ty + 3, 1, 1);
     }
     // objetivo elegible: corchetes
     if (this.seleccion && this.seleccion.validos.includes(u)) {
-      x.fillStyle = parpadeo ? '#F27827' : '#EFEEF0';
+      x.fillStyle = parpadeo ? C.naranja : C.claro;
       const l = cx - 22, r = cx + 21, a = piso - 50, b = piso + 2;
       [[l, a, 1, 0], [r, a, -1, 0], [l, b, 1, 1], [r, b, -1, 1]].forEach(([px, py, sx, abajo]) => {
         x.fillRect(sx > 0 ? px : px - 4, py, 5, 1);
@@ -461,17 +478,17 @@ BB.Batalla = class {
     }
     // barra de PV
     const bw = 34, by = piso + 4, bx = cx - 17;
-    x.fillStyle = '#0D0C12'; x.fillRect(bx - 1, by - 1, bw + 2, 5);
+    x.fillStyle = C.negro; x.fillRect(bx - 1, by - 1, bw + 2, 5);
     const p = u.pv / u.maxPv;
-    x.fillStyle = p > 0.5 ? '#689274' : p > 0.25 ? '#F27827' : '#C01E2A';
+    x.fillStyle = p > 0.5 ? C.verde : p > 0.25 ? C.amarillo : C.rojo;
     x.fillRect(bx, by, Math.max(1, Math.round(bw * p)), 3);
     // íconos de estado
     let ix = bx;
     const icono = (c) => { x.fillStyle = c; x.fillRect(ix, by + 5, 3, 3); ix += 4; };
-    if (u.veneno) icono('#835E78');
-    if (u.aturdido) icono('#F27827');
-    if (u.esquiva) icono('#B9C4C0');
-    if (u.etapas.atq > 0 || u.etapas.def > 0 || u.etapas.vel > 0) icono('#689274');
-    if (u.etapas.atq < 0 || u.etapas.def < 0 || u.etapas.vel < 0) icono('#C01E2A');
+    if (u.veneno) icono(C.violeta);
+    if (u.aturdido) icono(C.naranja);
+    if (u.esquiva) icono(C.gris);
+    if (u.etapas.atq > 0 || u.etapas.def > 0 || u.etapas.vel > 0) icono(C.verde);
+    if (u.etapas.atq < 0 || u.etapas.def < 0 || u.etapas.vel < 0) icono(C.rojo);
   }
 };

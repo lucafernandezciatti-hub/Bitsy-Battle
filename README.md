@@ -65,11 +65,13 @@ Estos son los 4 símbolos que hay que imprimir **al lado de Luca y Donna** en ca
 
 **La dificultad:** en `mundos.json`, `"nivel"` de cada rival multiplica sus PV y ATQ (1 = normal).
 
-**Un sprite:** poné el PNG en `assets/bitsies/` y apuntalo desde `"sprite"` en `bitsies.json`. Conviene pasarlo antes por `pixelar.py` con la paleta congelada:
+**Un sprite:** poné el PNG en `assets/bitsies/` y apuntalo desde `"sprite"` en `bitsies.json`. Los sprites de la app se generan con `herramientas/normalizar_bitsies.py` (usa las funciones de `pixelar.py`). Desde la carpeta Pixelados:
 
 ```
-python pixelar.py --alto 72 --escala 6 --solo-figura --paleta normalizados/paleta.txt --salida normalizados "Bitsies/Bitsy Nuevo.jpg=45,26"
+python bitsy-battle/herramientas/normalizar_bitsies.py
 ```
+
+A diferencia de `pixelar.py`, que lleva cada figura a 45 px de alto total, este script usa **la misma escala para todos** (la de la Bitsy Base). Así las orejas de Batman o el pelo de Lisa suman altura en vez de achicar el cuerpo. Tampoco usa la paleta congelada de 48 colores (que no tiene amarillo ni violeta): cada sprite lleva sus colores originales un poco más saturados. Para un Bitsy nuevo, agregá su JPG al diccionario `ARCH` del script.
 
 Si un sprite falta o no carga, la app muestra la silueta de la Base con glitch.
 

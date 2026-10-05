@@ -27,9 +27,9 @@ function enGris(img) {
 
 function infectar(img) {
   // tono verde-azulado del Virus + líneas cortadas
-  const c = teñir(img, '#34726C', 0.45), x = c.getContext('2d');
+  const c = teñir(img, '#19E3D0', 0.35), x = c.getContext('2d');
   x.globalCompositeOperation = 'source-atop';
-  x.fillStyle = 'rgba(192,30,42,.55)';
+  x.fillStyle = 'rgba(255,51,88,.6)';
   for (let y = 3; y < c.height; y += 9) x.fillRect(0, y, c.width, 1);
   return c;
 }
@@ -55,7 +55,7 @@ BB.cargarSprites = async function () {
       normal: img,
       infectado: infectar(img),
       gris: enGris(img),
-      blanco: teñir(img, '#F9F9F9', 1)
+      blanco: teñir(img, '#FBF8FF', 1)
     };
   }
   // los secuaces y guardianes sin disfraz son siluetas de la Base, siempre glitcheadas
@@ -90,7 +90,7 @@ BB.textoPixel = function (x, txt, cx, y, color, escala = 1) {
   const x0 = Math.round(cx - ancho / 2);
   for (let pasada = 0; pasada < 2; pasada++) { // 0 = sombra, 1 = color
     let px = x0;
-    x.fillStyle = pasada === 0 ? '#0D0C12' : color;
+    x.fillStyle = pasada === 0 ? '#0B0820' : color;
     for (const ch of txt) {
       const g = GLIFOS[ch];
       if (g) {
