@@ -80,6 +80,7 @@ BB.mostrarIntro = function () {
   // las copias corruptas: el fragmento y algunas versiones disfrazadas, todas en su versión "infectada"
   const COPIAS = { 'intro-copia1': 'mario', 'intro-copia2': 'fragmento', 'intro-copia3': 'batman', 'intro-copia4': 'hello_kitty' };
   Object.entries(COPIAS).forEach(([el, id]) => {
+    if (!$(el)) return; // si el HTML es de otra versión, se saltea en vez de romper la intro
     const sp = BB.sprites[id] || BB.sprites.fragmento;
     let src = sp.src;
     try { if (sp.infectado && sp.infectado.toDataURL) src = sp.infectado.toDataURL(); } catch (e) { /* usa el original */ }
