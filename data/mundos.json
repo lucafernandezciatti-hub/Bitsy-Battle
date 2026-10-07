@@ -1,5 +1,5 @@
 {
-  "_ayuda": "codigo = 4 símbolos de ■ ▲ ● ✦ ♥ ✖ (el que va impreso al lado de Luca y Donna). variantes = ids de los Bitsies que desbloquea esa página. nivel multiplica PV y ATQ del rival.",
+  "_ayuda": "codigo = 4 símbolos de ■ ▲ ● ✦ ♥ ✖ (el que va impreso al lado de Luca y Donna). variantes = ids de los Bitsies que desbloquea esa página. nivel multiplica PV y ATQ del rival. En la batalla final, jefe=true dibuja al Virus solo y grande; acciones = turnos por ronda; pvMult multiplica su vida.",
   "codigo_maestro": "✖✖✖✖",
   "mundos": [
     {
@@ -273,24 +273,12 @@
     "fondo": null,
     "equipo_rival": [
       {
-        "bitsy": "fragmento",
-        "infectado": true,
-        "nivel": 1.43
-      },
-      {
         "bitsy": "virus",
         "infectado": false,
-        "nivel": 1.38
-      },
-      {
-        "bitsy": "fragmento",
-        "infectado": true,
-        "nivel": 1.43
-      },
-      {
-        "bitsy": "fragmento",
-        "infectado": true,
-        "nivel": 1.43
+        "jefe": true,
+        "acciones": 2,
+        "nivel": 1.25,
+        "pvMult": 2.8
       }
     ]
   }

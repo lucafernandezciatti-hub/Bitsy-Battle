@@ -163,7 +163,10 @@ BB.feedback = (function () {
     a.download = `bitsy-feedback-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    aviso(`ARCHIVO DESCARGADO (${notas.length} NOTAS)`);
+    // una vez descargadas, las notas se borran: el próximo archivo trae solo las nuevas
+    await borrarTodas();
+    pintarContador();
+    aviso(`ARCHIVO DESCARGADO (${notas.length} NOTAS) · HISTORIAL LIMPIO`);
   }
 
   async function borrar() {

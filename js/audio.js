@@ -45,6 +45,8 @@ BB.audio = (function () {
 
   const efectos = {
     tecla: (t) => nota(880, t, 0.05, 'square', 0.15),
+    // voz de Bitsy: bip corto con un poco de variación de tono
+    voz: (t) => nota(430 + Math.random() * 90, t, 0.045, 'square', 0.09),
     elegir: (t) => { nota(660, t, 0.06); nota(990, t + 0.05, 0.08); },
     golpe: (t) => { ruido(t, 0.12, 0.3); nota(220, t, 0.12, 'square', 0.25, master, 0.4); },
     esquiva: (t) => nota(500, t, 0.18, 'triangle', 0.3, master, 2.5),

@@ -935,8 +935,8 @@
           "nombre": "Corromper",
           "desc": "Daño a todos los rivales",
           "objetivo": "rivales",
-          "poder": 9,
-          "usos": 8
+          "poder": 6,
+          "usos": 4
         },
         {
           "id": "infectar",

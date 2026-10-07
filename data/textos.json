@@ -21,6 +21,13 @@
   "derrota_bitsy": "Nos desconectaron. Probá otro equipo o cambiá el orden de los ataques.",
   "final_bloqueado": "Recuperá los 8 segmentos de señal para abrir el núcleo del Virus.",
   "salida_titulo": "SALIDA DESBLOQUEADA",
-  "salida_texto": "La señal está completa. Luca y Donna vuelven al mundo real. El Virus quedó atrapado en tu colección.",
-  "creditos": "Pixelados · IA Generativa y Diseño · UTDT · Grupo 03: Donna Liporace, Luca Fernández Ciatti, Lucía Medina"
+  "creditos": "Pixelados · IA Generativa y Diseño · UTDT · Grupo 03: Donna Liporace, Luca Fernández Ciatti, Lucía Medina",
+  "salida_mensajes": [
+    "Lo lograste. La señal está completa.",
+    "Luca y Donna ya salieron de la máquina. Los vi pasar por el monitor... dejaron el café, eso sí.",
+    "El Virus quedó encerrado en tu colección. Ahora pelea de nuestro lado.",
+    "Yo me quedo acá adentro. Alguien tiene que cuidar los mundos.",
+    "Gracias por buscarlos, página por página."
+  ],
+  "ayuda_dialogo": "X: VER TODO · TOCÁ O ENTER: SEGUIR"
 }

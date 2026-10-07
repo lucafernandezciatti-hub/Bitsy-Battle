@@ -28,9 +28,10 @@ BB.crearUnidad = function (id, bando, idx, opc = {}) {
   const d = BB.datos.porId[id];
   const n = opc.nivel || 1;
   const nombre = opc.nombre || (opc.infectado && d.jugable ? d.nombre + ' infectado' : d.nombre) + (opc.sufijo || '');
-  const pv = Math.round(d.stats.pv * n);
+  const pv = Math.round(d.stats.pv * n * (opc.pvMult || 1));
   return {
     uid: bando + idx, id, bando, idx, d, nombre,
+    jefe: !!opc.jefe, acciones: opc.acciones || 1,
     infectado: !!opc.infectado,
     maxPv: pv, pv,
     base: { atq: d.stats.atq * n, def: d.stats.def, vel: d.stats.vel }, // el nivel sube PV y ATQ
@@ -43,6 +44,16 @@ BB.crearUnidad = function (id, bando, idx, opc = {}) {
 };
 
 BB.stat = (u, s) => u.base[s] * mult(u.etapas[s]);
+
+// Dónde y de qué tamaño se dibuja cada Bitsy. El jefe va solo, al centro y mucho más grande.
+BB.posicion = function (u) {
+  const sp = BB.sprites[u.id];
+  if (u.jefe) {
+    const escala = (PISO[u.bando] - 8) / sp.alto;
+    return { cx: ANCHO / 2, escala, alto: sp.alto * escala, medio: sp.ancho * escala / 2 };
+  }
+  return { cx: COLS[u.idx], escala: 1, alto: sp.alto, medio: 22 };
+};
 
 // Cuando a un Bitsy no le quedan usos en ningún movimiento, puede usar este (como el Forcejeo de Pokémon)
 BB.ARREBATO = { id: 'arrebato', nombre: 'Arrebato', desc: 'Sin usos: golpe débil', objetivo: 'rival', poder: 7 };
@@ -74,7 +85,8 @@ BB.Batalla = class {
   sfx(n) { if (this.conPantalla) BB.audio.sonar(n); }
   flotar(u, txt, color) {
     if (!this.conPantalla) return;
-    this.flotantes.push({ txt, color, x: COLS[u.idx], y: PISO[u.bando] - (BB.sprites[u.id] ? BB.sprites[u.id].alto : 45) - 4, t: 0 });
+    const pos = BB.posicion(u);
+    this.flotantes.push({ txt, color, x: pos.cx, y: Math.max(8, PISO[u.bando] - pos.alto - 4), t: 0 });
   }
 
   // ---------------- bucle principal ----------------
@@ -109,6 +121,13 @@ BB.Batalla = class {
     this.ronda++;
     if (this.ronda === 9) this.log('¡La señal se degrada! Los golpes pegan más fuerte');
     this.cola = this.ordenar(this.todos.filter((u) => u.vivo));
+    // el jefe actúa más de una vez por ronda: sus turnos extra se reparten en la cola
+    this.todos.filter((u) => u.vivo && u.acciones > 1).forEach((u) => {
+      for (let k = 1; k < u.acciones; k++) {
+        const pos = Math.round(this.cola.length * k / u.acciones);
+        this.cola.splice(Math.min(pos, this.cola.length), 0, u);
+      }
+    });
     this.todos.forEach((u) => { u.alFinal = false; });
   }
 
@@ -251,7 +270,7 @@ BB.Batalla = class {
         this.sfx('estado');
         break;
       case 'aturdir':
-        if (t.inmune) { this.flotar(t, 'RESISTE', C.gris); break; }
+        if (t.inmune || t.jefe) { this.flotar(t, 'RESISTE', C.gris); break; }
         t.aturdido = Math.max(t.aturdido, ef.turnos);
         this.flotar(t, 'ZZZ', C.naranja);
         this.sfx('estado');
@@ -349,7 +368,7 @@ BB.Batalla = class {
     const r = this.cv.getBoundingClientRect();
     const x = (ev.clientX - r.left) * ANCHO / r.width;
     const y = (ev.clientY - r.top) * ALTO / r.height;
-    const u = this.seleccion.validos.find((v) => Math.abs(COLS[v.idx] - x) <= 23 && y >= PISO[v.bando] - BB.sprites[v.id].alto - 6 && y <= PISO[v.bando] + 10);
+    const u = this.seleccion.validos.find((v) => { const p = BB.posicion(v); return Math.abs(p.cx - x) <= p.medio + 1 && y >= PISO[v.bando] - p.alto - 6 && y <= PISO[v.bando] + 10; });
     if (u) { BB.audio.sonar('tecla'); this.seleccion.resolver(u); }
   }
 
@@ -464,10 +483,11 @@ BB.Batalla = class {
     let fuente = u.infectado ? sp.infectado : sp.img;
     if (!u.vivo) fuente = sp.gris;
     if (u.destello > 0) { fuente = sp.blanco; u.destello--; }
-    const cx = COLS[u.idx], piso = PISO[u.bando];
+    const pos = BB.posicion(u);
+    const cx = pos.cx, piso = PISO[u.bando];
     // latido: el Bitsy que tiene el turno crece y se achica, anclado en los pies
     const late = this.actual === u && u.vivo ? 1 + 0.07 * Math.max(0, Math.sin(t / 140)) ** 3 : 1;
-    const w = sp.ancho * late, h = sp.alto * late;
+    const w = sp.ancho * pos.escala * late, h = sp.alto * pos.escala * late;
     let dx = cx - w / 2, dy = piso - h + u.dy;
     if (u.temblor > 0) { dx += (u.temblor % 2 ? 2 : -2); u.temblor--; }
 
@@ -493,20 +513,20 @@ BB.Batalla = class {
     // turno actual: flecha
     if (this.actual === u && parpadeo) {
       x.fillStyle = C.naranja;
-      const ty = Math.round(dy - 7);
+      const ty = Math.max(1, Math.round(dy - 7));
       x.fillRect(cx - 3, ty, 7, 1); x.fillRect(cx - 2, ty + 1, 5, 1); x.fillRect(cx - 1, ty + 2, 3, 1); x.fillRect(cx, ty + 3, 1, 1);
     }
     // objetivo elegible: corchetes
     if (this.seleccion && this.seleccion.validos.includes(u)) {
       x.fillStyle = parpadeo ? C.naranja : C.claro;
-      const l = cx - 22, r = cx + 21, a = Math.round(piso - h - 4), b = piso + 2;
+      const l = Math.round(cx - pos.medio), r = Math.round(cx + pos.medio - 1), a = Math.max(1, Math.round(piso - h - 4)), b = piso + 2;
       [[l, a, 1, 0], [r, a, -1, 0], [l, b, 1, 1], [r, b, -1, 1]].forEach(([px, py, sx, abajo]) => {
         x.fillRect(sx > 0 ? px : px - 4, py, 5, 1);
         x.fillRect(px, abajo ? py - 4 : py, 1, 5);
       });
     }
     // barra de PV
-    const bw = 34, by = piso + 4, bx = cx - 17;
+    const bw = u.jefe ? 90 : 34, by = piso + 4, bx = Math.round(cx - bw / 2);
     x.fillStyle = C.negro; x.fillRect(bx - 1, by - 1, bw + 2, 5);
     const p = u.pv / u.maxPv;
     x.fillStyle = p > 0.5 ? C.verde : p > 0.25 ? C.amarillo : C.rojo;

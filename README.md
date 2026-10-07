@@ -86,7 +86,7 @@ El botón ✎ (arriba, al lado del ♪) sirve para dejar notas mientras probás 
 2. Escribí la observación y apretá **Enter** (Shift+Enter baja de línea, Esc cierra).
 3. Cuando termines, abrí ✎ otra vez y tocá **DESCARGAR ARCHIVO**: baja un `bitsy-feedback-AAAA-MM-DD.json` con todas las notas, sus capturas y el estado del juego (pantalla, turno, PV de cada Bitsy). Ese archivo es el que se le pasa a Claude.
 
-Las notas quedan guardadas en ese navegador hasta que toques **BORRAR TODO**. La descarga funciona en GitHub Pages o en tu compu; dentro de la vista previa de Claude el navegador bloquea las descargas.
+Al descargar el archivo, las notas se borran del navegador: así cada archivo trae solo las observaciones nuevas. **BORRAR TODO** las borra sin descargarlas. La descarga funciona en GitHub Pages o en tu compu; dentro de la vista previa de Claude el navegador bloquea las descargas.
 
 ## Reglas de batalla
 

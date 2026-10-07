@@ -4,6 +4,7 @@ window.BB = window.BB || {};
 const $ = (id) => document.getElementById(id);
 
 BB.ir = function (nombre) {
+  BB.dialogo.cancelar();
   document.querySelectorAll('.vista').forEach((v) => v.classList.remove('activa'));
   $('v-' + nombre).classList.add('activa');
   $('modal').hidden = true;
@@ -24,22 +25,45 @@ BB.pintarSenal = function (cont, nuevo = -1) {
 };
 
 // ---------------- Ficha de un Bitsy (modal) ----------------
-BB.mostrarFicha = function (id, { revelar = false, aviso = '', alCerrar = null } = {}) {
+BB.mostrarFicha = function (id, { revelar = false, aviso = '', alCerrar = null, accion = null } = {}) {
   const d = BB.datos.porId[id];
   const sp = BB.sprites[id];
   const stat = (nom, v, max) => `<div class="stat"><span>${nom}</span><span class="barra"><i style="width:${Math.round(v / max * 100)}%"></i></span><span>${v}</span></div>`;
   $('ficha').innerHTML = `
     ${aviso ? `<p class="aviso">${aviso}</p>` : ''}
-    <div class="ficha-top">
-      <img class="sprite ${revelar ? 'revelar' : ''}" src="${sp.src}" alt="${d.nombre}">
-      <div><h3>${d.nombre}</h3><p class="rol">${d.rol}</p></div>
+    <div class="ficha-izq">
+      <div class="ficha-top">
+        <img class="sprite ${revelar ? 'revelar' : ''}" src="${sp.src}" alt="${d.nombre}">
+        <div><h3>${d.nombre}</h3><p class="rol">${d.rol}</p></div>
+      </div>
+      ${stat('PV', d.stats.pv, 140)}${stat('ATQ', d.stats.atq, 15)}${stat('DEF', d.stats.def, 15)}${stat('VEL', d.stats.vel, 15)}
     </div>
-    ${stat('PV', d.stats.pv, 140)}${stat('ATQ', d.stats.atq, 15)}${stat('DEF', d.stats.def, 15)}${stat('VEL', d.stats.vel, 15)}
-    <ul>${d.movimientos.map((m) => `<li>${m.nombre}<small>${m.desc}</small></li>`).join('')}</ul>
-    <button class="btn btn-primario" id="ficha-cerrar">CERRAR</button>`;
+    <div class="ficha-der">
+    <ul>${d.movimientos.map((m) => `<li><span class="li-mov">${m.nombre}<span class="pp">${m.usos || 10} USOS</span></span><small>${m.desc}</small></li>`).join('')}</ul>
+    ${accion ? `<button class="btn btn-primario" id="ficha-accion" ${accion.deshabilitado ? 'disabled' : ''}>${accion.texto}</button>` : ''}
+    <button class="btn ${accion ? '' : 'btn-primario'}" id="ficha-cerrar">CERRAR</button>
+    </div>`;
   $('modal').hidden = false;
   $('ficha-cerrar').textContent = alCerrar ? 'SIGUIENTE ►' : 'CERRAR';
   $('ficha-cerrar').onclick = () => { BB.audio.sonar('tecla'); $('modal').hidden = true; if (alCerrar) alCerrar(); };
+  if (accion) $('ficha-accion').onclick = () => { $('modal').hidden = true; accion.fn(); };
+};
+
+// ---------------- Pantalla final: solo Bitsy, hablando ----------------
+BB.mostrarSalida = function () {
+  const T = BB.datos.textos;
+  BB.ir('salida');
+  $('salida-creditos').hidden = true;
+  $('salida-volver').hidden = true;
+  $('salida-ayuda').textContent = T.ayuda_dialogo;
+  $('salida-creditos').textContent = T.creditos;
+  BB.dialogo.hablar($('salida-txt'), T.salida_mensajes, {
+    alTerminar: () => {
+      $('salida-ayuda').textContent = '';
+      $('salida-creditos').hidden = false;
+      $('salida-volver').hidden = false;
+    }
+  });
 };
 
 // Figura de un Bitsy en una caja de alto fijo: todos se escalan con el mismo factor
@@ -69,7 +93,7 @@ BB.pantallas = {
     BB.pintarSenal($('senal-barra'));
     $('senal-txt').textContent = `SEÑAL ${BB.senal()}/8`;
     const t = BB.datos.textos.inicio_bitsy;
-    $('guia-txt').textContent = BB.senal() === 0 && BB.progreso.encontrados.length === 0 ? t[0] + ' ' + t[3] : BB.al(t);
+    BB.dialogo.hablar($('guia-txt'), BB.senal() === 0 && BB.progreso.encontrados.length === 0 ? [t[0], t[3]] : BB.al(t));
   },
 
   ingresar() {
@@ -209,7 +233,7 @@ function verificarCodigo() {
     BB.audio.sonar('error');
     msg.className = 'mensaje error';
     msg.textContent = T.error_codigo.replace('{n}', (errores % 9) + 1);
-    $('ingresar-pista').textContent = BB.al(T.pistas_error);
+    BB.dialogo.hablar($('ingresar-pista'), BB.al(T.pistas_error));
     $('casilleros').classList.add('temblor');
     setTimeout(() => $('casilleros').classList.remove('temblor'), 600);
     BB.codigo = []; setTimeout(pintarCasilleros, 500);
@@ -261,10 +285,15 @@ function pintarEquipo() {
     const c = BB.carta(b.id, { badge: n ? (b.repetible ? '×' + n : '✔') : '' });
     if (n) c.classList.add('elegida');
     c.onclick = () => {
-      if (equipo.length >= 4 || (n && !b.repetible)) { BB.audio.sonar('error'); return; }
       BB.audio.sonar('tecla');
-      equipo.push(b.id);
-      pintarEquipo();
+      const yaEsta = n && !b.repetible, lleno = equipo.length >= 4;
+      BB.mostrarFicha(b.id, {
+        accion: {
+          texto: yaEsta ? 'YA ESTÁ EN EL EQUIPO' : lleno ? 'EQUIPO COMPLETO' : 'SUMAR AL EQUIPO',
+          deshabilitado: yaEsta || lleno,
+          fn: () => { BB.audio.sonar('elegir'); equipo.push(b.id); pintarEquipo(); }
+        }
+      });
     };
     g.appendChild(c);
   });
@@ -314,7 +343,7 @@ function mostrarResultado(res, combate) {
       BB.progreso.virusVencido = true;
       if (!BB.desbloqueado('virus')) BB.progreso.desbloqueados.push('virus');
       BB.guardar();
-      if (primera) { BB.ir('salida'); $('salida-txt').textContent = T.salida_texto; $('salida-creditos').textContent = T.creditos; return; }
+      if (primera) { BB.mostrarSalida(); return; }
       txt = 'El Virus volvió a caer.';
     } else txt = combate.tipo === 'rapida' ? 'Buena pelea. Ese equipo funciona.' : 'Este mundo ya tenía su señal. Igual sirve para practicar.';
     BB.guardar();
@@ -327,7 +356,7 @@ function mostrarResultado(res, combate) {
   $('res-titulo').className = 'resultado-titulo' + (res === 'victoria' ? '' : ' perdio');
   BB.pintarSenal($('res-barra'), nuevo);
   $('res-senal').textContent = `SEÑAL ${BB.senal()}/8`;
-  $('res-txt').textContent = txt;
+  BB.dialogo.hablar($('res-txt'), txt);
   $('res-seguir').onclick = () => BB.ir(combate.tipo === 'rapida' ? 'inicio' : 'mapa');
   $('res-reintentar').onclick = () => { BB.combate = combate; BB.ir('equipo'); };
 }

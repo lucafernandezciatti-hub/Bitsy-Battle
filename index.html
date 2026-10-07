@@ -82,7 +82,7 @@
       <div class="barra-titulo"><button class="volver" id="equipo-volver">◄</button><h2>ELEGIR EQUIPO</h2></div>
       <p class="sub" id="equipo-rival-txt"></p>
       <div class="slots" id="equipo-slots"></div>
-      <p class="sub">TOCÁ UN BITSY PARA SUMARLO. LA BASE SE PUEDE REPETIR.</p>
+      <p class="sub">TOCÁ UN BITSY PARA VER SUS STATS Y SUMARLO. LA BASE SE PUEDE REPETIR.</p>
       <div class="grilla grilla-equipo" id="equipo-grilla"></div>
       <button class="btn btn-primario btn-ancho" id="btn-pelear" disabled>¡A PELEAR!</button>
     </section>
@@ -113,16 +113,13 @@
 
     <!-- SALIDA -->
     <section class="vista" id="v-salida">
-      <div class="centro">
+      <div class="centro salida">
         <h2 class="resultado-titulo glitch-txt" id="salida-titulo">SALIDA DESBLOQUEADA</h2>
-        <div class="salida-escena">
-          <img class="sprite sprite-persona" src="assets/personajes/luca.png" alt="Luca">
-          <img class="sprite" src="assets/bitsies/bitsy_base.png" alt="Bitsy">
-          <img class="sprite sprite-persona" src="assets/personajes/donna.png" alt="Donna">
-        </div>
-        <p class="globo" id="salida-txt"></p>
-        <p class="creditos" id="salida-creditos"></p>
-        <button class="btn btn-primario" data-ir="inicio">VOLVER AL INICIO</button>
+        <img class="sprite bitsy-final" src="assets/bitsies/bitsy_base.png" alt="Bitsy">
+        <div class="caja-dialogo"><p class="dialogo-txt" id="salida-txt" aria-live="polite"></p></div>
+        <p class="sub" id="salida-ayuda"></p>
+        <p class="creditos" id="salida-creditos" hidden></p>
+        <button class="btn btn-primario" id="salida-volver" data-ir="inicio" hidden>VOLVER AL INICIO</button>
       </div>
     </section>
 
@@ -177,6 +174,7 @@
 <script src="js/audio.js"></script>
 <script src="js/sprites.js"></script>
 <script src="js/batalla.js"></script>
+<script src="js/dialogo.js"></script>
 <script src="js/pantallas.js"></script>
 <script src="js/feedback.js"></script>
 <script src="js/main.js"></script>
