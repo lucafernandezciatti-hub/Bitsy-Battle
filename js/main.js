@@ -1,7 +1,11 @@
 // main.js — arranque de la app
 (async function () {
   // el audio del navegador solo arranca después de un toque
-  document.addEventListener('pointerdown', () => BB.audio.iniciar(), { once: true });
+  document.addEventListener('pointerdown', () => {
+    BB.audio.iniciar();
+    BB.audioListo = true;
+    if (!document.getElementById('v-batalla').classList.contains('activa')) BB.audio.musica('menu');
+  }, { once: true });
   BB.cargarProgreso();
   try {
     await BB.cargarDatos();

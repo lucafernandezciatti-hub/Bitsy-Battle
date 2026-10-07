@@ -65,30 +65,51 @@ BB.audio = (function () {
     efectos[nombre](ctx.currentTime + 0.01);
   }
 
-  // Música de batalla: bajo + arpegio en La menor, 8 compases en loop
-  const BAJO = [110, 110, 87.31, 87.31, 130.81, 130.81, 98, 98];
-  const ARP = [[440, 523, 659], [440, 523, 659], [349, 440, 523], [349, 440, 523], [523, 659, 784], [523, 659, 784], [392, 494, 587], [392, 494, 587]];
-  const SEMI = 0.14;
+  // ---------------- Música (loops chiptune programados con Web Audio) ----------------
+  // batalla: bajo + arpegio rápido en La menor · menú: arpegio lento y suave en Do mayor
+  const TEMAS = {
+    batalla: {
+      semi: 0.14, vol: 0.22,
+      bajo: [110, 110, 87.31, 87.31, 130.81, 130.81, 98, 98],
+      acordes: [[440, 523, 659], [440, 523, 659], [349, 440, 523], [349, 440, 523], [523, 659, 784], [523, 659, 784], [392, 494, 587], [392, 494, 587]],
+      tono: 'square', bombo: true
+    },
+    menu: {
+      semi: 0.24, vol: 0.16,
+      bajo: [65.41, 65.41, 55, 55, 87.31, 87.31, 98, 98],
+      acordes: [[523, 659, 784], [523, 659, 784], [440, 523, 659], [440, 523, 659], [349, 440, 523], [349, 440, 523], [392, 494, 587], [392, 494, 784]],
+      tono: 'triangle', bombo: false
+    }
+  };
+  let temaActual = null, esperaMenu = null;
 
   function programar() {
-    while (proxima < ctx.currentTime + 0.2) {
+    const T = TEMAS[temaActual];
+    if (!T) return;
+    while (proxima < ctx.currentTime + 0.25) {
       const compas = Math.floor(paso / 8) % 8;
       const p = paso % 8;
-      if (p % 2 === 0) nota(BAJO[compas], proxima, SEMI * 1.8, 'triangle', 0.5, musicaGain);
-      nota(ARP[compas][p % 3] * (p >= 6 ? 2 : 1), proxima, SEMI * 0.8, 'square', 0.12, musicaGain);
-      if (p === 4) ruido(proxima, 0.04, 0.05);
-      proxima += SEMI; paso++;
+      if (p % 2 === 0) nota(T.bajo[compas], proxima, T.semi * 1.8, 'triangle', 0.5, musicaGain);
+      const orden = temaActual === 'menu' ? [0, 1, 2, 1, 0, 1, 2, 1] : [0, 1, 2, 0, 1, 2, 0, 1];
+      nota(T.acordes[compas][orden[p]] * (temaActual === 'batalla' && p >= 6 ? 2 : 1), proxima, T.semi * (temaActual === 'menu' ? 1.6 : 0.8), T.tono, temaActual === 'menu' ? 0.18 : 0.12, musicaGain);
+      if (T.bombo && p === 4) ruido(proxima, 0.04, 0.05);
+      proxima += T.semi; paso++;
     }
   }
 
-  function musica(encender) {
+  // tipo: 'menu' | 'batalla' | null (silencio). demora en ms (para no pisar la fanfarria de victoria)
+  function musica(tipo, demora = 0) {
+    clearTimeout(esperaMenu);
+    if (demora) { esperaMenu = setTimeout(() => musica(tipo), demora); return; }
+    if (tipo === temaActual && timerMusica) return;
     iniciar();
     if (!ctx) return;
     clearInterval(timerMusica); timerMusica = null;
-    if (encender) {
-      paso = 0; proxima = ctx.currentTime + 0.05;
-      timerMusica = setInterval(programar, 60);
-    }
+    temaActual = tipo;
+    if (!tipo) return;
+    musicaGain.gain.value = TEMAS[tipo].vol;
+    paso = 0; proxima = ctx.currentTime + 0.05;
+    timerMusica = setInterval(programar, 60);
   }
 
   function setSonido(si) {
@@ -97,5 +118,5 @@ BB.audio = (function () {
     if (master) master.gain.value = si ? 0.5 : 0;
   }
 
-  return { iniciar, sonar, musica, setSonido };
+  return { iniciar, sonar, musica, setSonido, tema: () => temaActual };
 })();

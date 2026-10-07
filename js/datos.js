@@ -39,6 +39,7 @@ BB.progresoVacio = function () {
     ganados: [],             // ids de mundos con la batalla ganada
     virusVencido: false,
     sonido: true,
+    demo: false,            // el código maestro abre todo, incluida la batalla final
     ultimoEquipo: []
   };
 };

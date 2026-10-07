@@ -35,6 +35,7 @@ BB.crearUnidad = function (id, bando, idx, opc = {}) {
     maxPv: pv, pv,
     base: { atq: d.stats.atq * n, def: d.stats.def, vel: d.stats.vel }, // el nivel sube PV y ATQ
     etapas: { atq: 0, def: 0, vel: 0 },
+    usos: Object.fromEntries(d.movimientos.map((m) => [m.id, m.usos || 10])),
     veneno: 0, aturdido: 0, inmune: false, esquiva: false, alFinal: false, vivo: true,
     // animación
     dy: 0, temblor: 0, destello: 0, muerte: 0
@@ -42,6 +43,10 @@ BB.crearUnidad = function (id, bando, idx, opc = {}) {
 };
 
 BB.stat = (u, s) => u.base[s] * mult(u.etapas[s]);
+
+// Cuando a un Bitsy no le quedan usos en ningún movimiento, puede usar este (como el Forcejeo de Pokémon)
+BB.ARREBATO = { id: 'arrebato', nombre: 'Arrebato', desc: 'Sin usos: golpe débil', objetivo: 'rival', poder: 7 };
+BB.disponibles = (u) => u.d.movimientos.filter((m) => u.usos[m.id] > 0);
 
 BB.Batalla = class {
   constructor({ jugador, rival, fondo, conPantalla = true, rapido = false }) {
@@ -74,7 +79,7 @@ BB.Batalla = class {
 
   // ---------------- bucle principal ----------------
   async jugar() {
-    if (this.conPantalla) { this.dibujando = true; this.cuadro(); BB.audio.musica(true); }
+    if (this.conPantalla) { this.dibujando = true; this.cuadro(); BB.audio.musica('batalla'); }
     while (!this.fin) {
       if (this.cola.length === 0) this.nuevaRonda();
       const u = this.cola.shift();
@@ -85,7 +90,7 @@ BB.Batalla = class {
       this.revisarFin();
     }
     this.actual = null;
-    if (this.conPantalla) { BB.audio.musica(false); await this.pausa(700); this.dibujando = false; window.removeEventListener('resize', this.alRedimensionar); }
+    if (this.conPantalla) { BB.audio.musica(null); await this.pausa(700); this.dibujando = false; window.removeEventListener('resize', this.alRedimensionar); }
     return this.fin;
   }
 
@@ -154,6 +159,7 @@ BB.Batalla = class {
   }
 
   async ejecutar(u, movOriginal, objetivo) {
+    if (u.usos[movOriginal.id] > 0) u.usos[movOriginal.id]--;
     const mov = this.resolver(u, movOriginal);
     if (!movOriginal.efectos || !movOriginal.efectos.some((e) => e.tipo === 'copiar')) this.ultimoMov[u.bando] = movOriginal;
     else if (!mov.copiado) this.ultimoMov[u.bando] = mov;
@@ -274,7 +280,8 @@ BB.Batalla = class {
   ia(u) {
     const enemigos = this.vivos(this.otro(u.bando));
     const aliados = this.vivos(u.bando);
-    const movs = u.d.movimientos.map((m) => ({ orig: m, m: this.resolver(u, m) }));
+    const usables = BB.disponibles(u);
+    const movs = (usables.length ? usables : [BB.ARREBATO]).map((m) => ({ orig: m, m: this.resolver(u, m) }));
     const dañoMin = (m, t) => (t.esquiva ? 0 : m.poder * (m.golpes || 1) * BB.stat(u, 'atq') / BB.stat(t, 'def') * 0.9 * this.degradacion());
     const esCura = (m) => (m.efectos || []).some((e) => e.tipo === 'cura') && !m.poder;
     const ofensivos = movs.filter((x) => x.m.poder);
@@ -303,7 +310,7 @@ BB.Batalla = class {
     const valor = (m) => m.poder * (m.golpes || 1) * (m.objetivo === 'rivales' ? enemigos.length * 0.7 : m.objetivo === 'dos_rivales' ? Math.min(2, enemigos.length) * 0.8 : 1);
     const mejor = ofensivos.sort((a, b) => valor(b.m) - valor(a.m))[0];
     if (mejor) return { mov: mejor.orig, objetivo: blanco };
-    return { mov: u.d.movimientos[0], objetivo: blanco };
+    return { mov: movs[0].orig, objetivo: blanco };
   }
 
   // ---------------- interfaz del jugador ----------------
@@ -358,11 +365,15 @@ BB.Batalla = class {
       this.log(`¿Qué hace ${u.nombre}?`);
       const elegirMov = () => {
         movs.innerHTML = '';
-        u.d.movimientos.forEach((m) => {
+        const lista = BB.disponibles(u).length ? u.d.movimientos : [BB.ARREBATO];
+        lista.forEach((m) => {
           const real = this.resolver(u, m);
+          const quedan = m === BB.ARREBATO ? null : u.usos[m.id];
           const b = document.createElement('button');
           b.className = 'btn mov' + (real.copiado ? ' copia' : '');
-          b.innerHTML = `<span class="mn">${real.nombre}</span><span class="md">${real.copiado ? real.desc : m.desc}</span>`;
+          b.disabled = quedan === 0;
+          b.innerHTML = `<span class="mn"><span class="mnom">${real.nombre}</span>${quedan === null ? '' : `<span class="pp${quedan <= 2 ? ' poco' : ''}">${quedan}/${m.usos || 10}</span>`}</span>` +
+            `<span class="md">${real.copiado ? real.desc : m.desc}</span>`;
           b.onclick = () => { BB.audio.sonar('elegir'); elegirObjetivo(m, real); };
           movs.appendChild(b);
         });
@@ -399,9 +410,12 @@ BB.Batalla = class {
       return `<div class="ficha-cola ${u.bando}${ahora ? ' ahora' : ''}" title="${u.nombre}"><img class="sprite" src="${sp.src}" alt="" style="${filtro}"></div>`;
     };
     const proxima = this.ordenar(this.todos.filter((u) => u.vivo));
-    el.innerHTML = ficha(this.actual, true) +
+    el.innerHTML = '<span class="cola-titulo">TURNOS</span><div class="cola-fichas">' + ficha(this.actual, true) +
       this.cola.filter((u) => u.vivo).map((u) => ficha(u)).join('') +
-      '<div class="sep"></div>' + proxima.slice(0, 4).map((u) => ficha(u)).join('');
+      '<div class="sep" title="Ronda siguiente"></div>' + proxima.slice(0, 4).map((u) => ficha(u)).join('') + '</div>';
+    // la fila entra deslizándose desde la derecha: el turno que terminó "sale" por la izquierda
+    const fichas = el.querySelector('.cola-fichas');
+    fichas.classList.remove('desliza'); void fichas.offsetWidth; fichas.classList.add('desliza');
     if (this.actual.bando === 'rival') {
       document.getElementById('actor').innerHTML = `<span style="color:var(--rojo)">TURNO RIVAL: ${this.actual.nombre}</span>`;
       document.getElementById('movs').innerHTML = '';
@@ -451,7 +465,9 @@ BB.Batalla = class {
     if (!u.vivo) fuente = sp.gris;
     if (u.destello > 0) { fuente = sp.blanco; u.destello--; }
     const cx = COLS[u.idx], piso = PISO[u.bando];
-    const w = sp.ancho, h = sp.alto;
+    // latido: el Bitsy que tiene el turno crece y se achica, anclado en los pies
+    const late = this.actual === u && u.vivo ? 1 + 0.07 * Math.max(0, Math.sin(t / 140)) ** 3 : 1;
+    const w = sp.ancho * late, h = sp.alto * late;
     let dx = cx - w / 2, dy = piso - h + u.dy;
     if (u.temblor > 0) { dx += (u.temblor % 2 ? 2 : -2); u.temblor--; }
 

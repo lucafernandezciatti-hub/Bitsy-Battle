@@ -9,6 +9,8 @@ BB.ir = function (nombre) {
   $('modal').hidden = true;
   const pintar = BB.pantallas[nombre];
   if (pintar) pintar();
+  // los menús tienen su propia música; la batalla la cambia por la suya
+  if (nombre !== 'batalla' && BB.audioListo) BB.audio.musica('menu', nombre === 'resultado' || nombre === 'salida' ? 2200 : 0);
 };
 
 BB.pintarSenal = function (cont, nuevo = -1) {
@@ -40,11 +42,20 @@ BB.mostrarFicha = function (id, { revelar = false, aviso = '', alCerrar = null }
   $('ficha-cerrar').onclick = () => { BB.audio.sonar('tecla'); $('modal').hidden = true; if (alCerrar) alCerrar(); };
 };
 
+// Figura de un Bitsy en una caja de alto fijo: todos se escalan con el mismo factor
+// (según su "alto" en bitsies.json), así los cuerpos quedan del mismo tamaño en todas las tarjetas.
+const ALTO_MAX = 57;
+BB.figura = function (id, filtro = '') {
+  const sp = BB.sprites[id];
+  const pct = Math.round(sp.alto / ALTO_MAX * 100);
+  return `<span class="fig"><img class="sprite" src="${sp.src}" alt="" style="--h:${pct}%;${filtro}"></span>`;
+};
+
 BB.carta = function (id, { bloqueada = false, badge = '' } = {}) {
   const d = BB.datos.porId[id];
   const c = document.createElement('button');
   c.className = 'carta' + (bloqueada ? ' bloqueada' : '');
-  c.innerHTML = `<img class="sprite" src="${BB.sprites[id].src}" alt="">
+  c.innerHTML = `${BB.figura(id)}
     <span class="nombre">${bloqueada ? '???' : d.nombre.replace('Bitsy ', '')}</span>${badge ? `<span class="badge">${badge}</span>` : ''}`;
   return c;
 };
@@ -109,7 +120,7 @@ BB.pantallas = {
       };
       m.appendChild(b);
     });
-    const listo = BB.senal() >= 8;
+    const listo = BB.senal() >= 8 || BB.progreso.demo;
     const f = document.createElement('button');
     f.className = 'mundo final' + (listo ? '' : ' bloqueado');
     f.innerHTML = `<span class="carpeta">C:\\SISTEMA\\NUCLEO</span><span class="mnombre">${BB.progreso.virusVencido ? 'VIRUS VENCIDO' : 'NÚCLEO DEL VIRUS'}</span>
@@ -183,6 +194,7 @@ function verificarCodigo() {
       if (!BB.progreso.encontrados.includes(m.id)) BB.progreso.encontrados.push(m.id);
       (m.variantes || []).forEach((id) => { if (!BB.desbloqueado(id)) BB.progreso.desbloqueados.push(id); });
     });
+    BB.progreso.demo = true; // también abre la batalla final
     BB.guardar();
     BB.audio.sonar('desbloqueo');
     msg.className = 'mensaje'; msg.textContent = T.maestro;
@@ -238,7 +250,7 @@ function pintarEquipo() {
     const s = document.createElement('button');
     s.className = 'slot' + (equipo[i] ? ' lleno' : '');
     s.setAttribute('aria-label', equipo[i] ? 'Quitar ' + BB.datos.porId[equipo[i]].nombre : 'Lugar vacío');
-    if (equipo[i]) s.innerHTML = `<img class="sprite" src="${BB.sprites[equipo[i]].src}" alt="">`;
+    if (equipo[i]) s.innerHTML = BB.figura(equipo[i]) + '<span class="quitar" aria-hidden="true">✖</span>';
     s.onclick = () => { if (equipo[i]) { BB.audio.sonar('tecla'); equipo.splice(i, 1); pintarEquipo(); } };
     slots.appendChild(s);
   }

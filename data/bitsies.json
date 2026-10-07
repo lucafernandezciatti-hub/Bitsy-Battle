@@ -1,5 +1,5 @@
 {
-  "_ayuda": "Cada Bitsy: stats (pv, atq, def, vel) y 3 movimientos. objetivo: rival | rivales | dos_rivales | aliado | aliados | propio. efectos: cura{pct} · veneno{turnos} · aturdir{turnos} · mod{stat, cambio} · esquiva · al_final · copiar. 'a' dice a quién va el efecto: objetivo (default) | propio | aliados. 'alto' = altura en unidades del canvas (la Base mide 45); está calculada para que todos los cuerpos tengan el mismo tamaño.",
+  "_ayuda": "Cada Bitsy: stats (pv, atq, def, vel) y 3 movimientos. objetivo: rival | rivales | dos_rivales | aliado | aliados | propio. efectos: cura{pct} · veneno{turnos} · aturdir{turnos} · mod{stat, cambio} · esquiva · al_final · copiar. 'a' dice a quién va el efecto: objetivo (default) | propio | aliados. 'alto' = altura en unidades del canvas (la Base mide 45); está calculada para que todos los cuerpos tengan el mismo tamaño. 'usos' = cuántas veces se puede usar el movimiento en una batalla (como los PP de Pokémon).",
   "bitsies": [
     {
       "id": "base",
@@ -22,7 +22,8 @@
           "nombre": "Golpe pixel",
           "desc": "Daño a un rival",
           "objetivo": "rival",
-          "poder": 14
+          "poder": 14,
+          "usos": 12
         },
         {
           "id": "reiniciar",
@@ -34,7 +35,8 @@
               "tipo": "cura",
               "pct": 20
             }
-          ]
+          ],
+          "usos": 6
         },
         {
           "id": "copiar",
@@ -45,7 +47,8 @@
             {
               "tipo": "copiar"
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -75,14 +78,16 @@
               "tipo": "esquiva",
               "a": "propio"
             }
-          ]
+          ],
+          "usos": 12
         },
         {
           "id": "bola_fuego",
           "nombre": "Bola de fuego",
           "desc": "Daño fuerte a un rival",
           "objetivo": "rival",
-          "poder": 18
+          "poder": 18,
+          "usos": 5
         },
         {
           "id": "hongo",
@@ -95,7 +100,8 @@
               "stat": "atq",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -125,7 +131,8 @@
               "tipo": "esquiva",
               "a": "propio"
             }
-          ]
+          ],
+          "usos": 12
         },
         {
           "id": "linterna",
@@ -138,7 +145,8 @@
               "tipo": "aturdir",
               "turnos": 1
             }
-          ]
+          ],
+          "usos": 5
         },
         {
           "id": "hermanos",
@@ -151,7 +159,8 @@
               "stat": "atq",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -175,7 +184,8 @@
           "nombre": "Batarang",
           "desc": "Golpea a 2 rivales",
           "objetivo": "dos_rivales",
-          "poder": 11
+          "poder": 11,
+          "usos": 8
         },
         {
           "id": "sombra",
@@ -189,7 +199,8 @@
             {
               "tipo": "esquiva"
             }
-          ]
+          ],
+          "usos": 8
         },
         {
           "id": "gadget",
@@ -203,7 +214,8 @@
               "stat": "def",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 12
         }
       ]
     },
@@ -227,7 +239,8 @@
           "nombre": "Bastón",
           "desc": "Daño a un rival",
           "objetivo": "rival",
-          "poder": 13
+          "poder": 13,
+          "usos": 12
         },
         {
           "id": "acrobacia",
@@ -243,14 +256,16 @@
               "stat": "vel",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         },
         {
           "id": "duo_dinamico",
           "nombre": "Dúo dinámico",
           "desc": "Golpea a 2 rivales",
           "objetivo": "dos_rivales",
-          "poder": 9
+          "poder": 9,
+          "usos": 8
         }
       ]
     },
@@ -280,7 +295,8 @@
               "tipo": "aturdir",
               "turnos": 1
             }
-          ]
+          ],
+          "usos": 5
         },
         {
           "id": "una_pista",
@@ -293,7 +309,8 @@
               "stat": "atq",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         },
         {
           "id": "escape",
@@ -308,7 +325,8 @@
               "tipo": "cura",
               "pct": 10
             }
-          ]
+          ],
+          "usos": 6
         }
       ]
     },
@@ -332,7 +350,8 @@
           "nombre": "Embestida",
           "desc": "Daño fuerte a un rival",
           "objetivo": "rival",
-          "poder": 15
+          "poder": 15,
+          "usos": 12
         },
         {
           "id": "desenmascarar",
@@ -346,7 +365,8 @@
               "stat": "def",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 12
         },
         {
           "id": "plan_maestro",
@@ -359,7 +379,8 @@
               "stat": "def",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -388,7 +409,8 @@
               "tipo": "cura",
               "pct": 25
             }
-          ]
+          ],
+          "usos": 6
         },
         {
           "id": "abrazo",
@@ -400,7 +422,8 @@
               "tipo": "cura",
               "pct": 10
             }
-          ]
+          ],
+          "usos": 6
         },
         {
           "id": "golpe_tierno",
@@ -414,7 +437,8 @@
               "stat": "atq",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 12
         }
       ]
     },
@@ -438,7 +462,8 @@
           "nombre": "Salpicón",
           "desc": "Daño bajo a todos los rivales",
           "objetivo": "rivales",
-          "poder": 7
+          "poder": 7,
+          "usos": 8
         },
         {
           "id": "charco",
@@ -450,7 +475,8 @@
               "tipo": "cura",
               "pct": 20
             }
-          ]
+          ],
+          "usos": 6
         },
         {
           "id": "croar",
@@ -464,7 +490,8 @@
               "stat": "vel",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 12
         }
       ]
     },
@@ -488,7 +515,8 @@
           "nombre": "Saxofón",
           "desc": "Daño bajo a todos los rivales",
           "objetivo": "rivales",
-          "poder": 8
+          "poder": 8,
+          "usos": 8
         },
         {
           "id": "dato_correcto",
@@ -502,7 +530,8 @@
               "stat": "def",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 12
         },
         {
           "id": "plan",
@@ -515,7 +544,8 @@
               "stat": "vel",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -539,7 +569,8 @@
           "nombre": "Gomera",
           "desc": "Daño a un rival",
           "objetivo": "rival",
-          "poder": 14
+          "poder": 14,
+          "usos": 12
         },
         {
           "id": "patineta",
@@ -555,7 +586,8 @@
               "stat": "vel",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         },
         {
           "id": "travesura",
@@ -568,7 +600,8 @@
               "stat": "atq",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -593,7 +626,8 @@
           "desc": "Golpea 2 veces",
           "objetivo": "rival",
           "poder": 9,
-          "golpes": 2
+          "golpes": 2,
+          "usos": 8
         },
         {
           "id": "fideos",
@@ -605,7 +639,8 @@
               "tipo": "cura",
               "pct": 15
             }
-          ]
+          ],
+          "usos": 6
         },
         {
           "id": "beso_sorpresa",
@@ -618,7 +653,8 @@
               "tipo": "aturdir",
               "turnos": 1
             }
-          ]
+          ],
+          "usos": 5
         }
       ]
     },
@@ -642,14 +678,16 @@
           "nombre": "Katana",
           "desc": "Daño fuerte a un rival",
           "objetivo": "rival",
-          "poder": 16
+          "poder": 16,
+          "usos": 5
         },
         {
           "id": "shuriken",
           "nombre": "Shuriken",
           "desc": "Golpea a 2 rivales",
           "objetivo": "dos_rivales",
-          "poder": 9
+          "poder": 9,
+          "usos": 8
         },
         {
           "id": "meditacion",
@@ -666,7 +704,8 @@
               "tipo": "cura",
               "pct": 10
             }
-          ]
+          ],
+          "usos": 6
         }
       ]
     },
@@ -690,7 +729,8 @@
           "nombre": "Kamehameha",
           "desc": "Daño muy fuerte a un rival",
           "objetivo": "rival",
-          "poder": 18
+          "poder": 18,
+          "usos": 5
         },
         {
           "id": "puno_rapido",
@@ -698,7 +738,8 @@
           "desc": "Golpea 2 veces",
           "objetivo": "rival",
           "poder": 8,
-          "golpes": 2
+          "golpes": 2,
+          "usos": 8
         },
         {
           "id": "concentrar_ki",
@@ -711,7 +752,8 @@
               "stat": "atq",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -735,14 +777,16 @@
           "nombre": "Galick Ho",
           "desc": "Daño fuerte a un rival",
           "objetivo": "rival",
-          "poder": 18
+          "poder": 18,
+          "usos": 5
         },
         {
           "id": "big_bang",
           "nombre": "Big Bang",
           "desc": "Daño a todos los rivales",
           "objetivo": "rivales",
-          "poder": 9
+          "poder": 9,
+          "usos": 8
         },
         {
           "id": "orgullo",
@@ -760,7 +804,8 @@
               "stat": "def",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 8
         }
       ]
     },
@@ -791,7 +836,8 @@
               "stat": "atq",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 12
         },
         {
           "id": "desmaius",
@@ -804,7 +850,8 @@
               "tipo": "aturdir",
               "turnos": 1
             }
-          ]
+          ],
+          "usos": 5
         },
         {
           "id": "patronus",
@@ -816,7 +863,8 @@
               "tipo": "cura",
               "pct": 12
             }
-          ]
+          ],
+          "usos": 6
         }
       ]
     },
@@ -840,7 +888,8 @@
           "nombre": "Varita rota",
           "desc": "Daño a un rival",
           "objetivo": "rival",
-          "poder": 14
+          "poder": 14,
+          "usos": 12
         },
         {
           "id": "ajedrez",
@@ -853,14 +902,16 @@
               "stat": "def",
               "cambio": 1
             }
-          ]
+          ],
+          "usos": 8
         },
         {
           "id": "weasley",
           "nombre": "Ataque Weasley",
           "desc": "Golpea a 2 rivales",
           "objetivo": "dos_rivales",
-          "poder": 10
+          "poder": 10,
+          "usos": 8
         }
       ]
     },
@@ -884,7 +935,8 @@
           "nombre": "Corromper",
           "desc": "Daño a todos los rivales",
           "objetivo": "rivales",
-          "poder": 9
+          "poder": 9,
+          "usos": 8
         },
         {
           "id": "infectar",
@@ -897,7 +949,8 @@
               "tipo": "veneno",
               "turnos": 3
             }
-          ]
+          ],
+          "usos": 12
         },
         {
           "id": "pantallazo",
@@ -910,7 +963,8 @@
               "tipo": "aturdir",
               "turnos": 1
             }
-          ]
+          ],
+          "usos": 5
         }
       ]
     },
@@ -934,7 +988,8 @@
           "nombre": "Mordisco de bits",
           "desc": "Daño a un rival",
           "objetivo": "rival",
-          "poder": 12
+          "poder": 12,
+          "usos": 12
         },
         {
           "id": "ruido",
@@ -948,7 +1003,8 @@
               "stat": "def",
               "cambio": -1
             }
-          ]
+          ],
+          "usos": 12
         },
         {
           "id": "parche",
@@ -960,7 +1016,8 @@
               "tipo": "cura",
               "pct": 15
             }
-          ]
+          ],
+          "usos": 6
         }
       ]
     }

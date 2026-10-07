@@ -15,7 +15,7 @@
   ],
   "error_codigo": "ERROR 0x0{n}: SEÑAL INVÁLIDA",
   "codigo_repetido": "ESA SEÑAL YA FUE RECUPERADA",
-  "maestro": "MODO DEMO: TODA LA SEÑAL DESBLOQUEADA",
+  "maestro": "MODO DEMO: TODO DESBLOQUEADO, INCLUIDA LA BATALLA FINAL",
   "victoria": "VICTORIA",
   "derrota": "SEÑAL PERDIDA",
   "derrota_bitsy": "Nos desconectaron. Probá otro equipo o cambiá el orden de los ataques.",

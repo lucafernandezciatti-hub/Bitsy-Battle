@@ -448,3 +448,88 @@ h2 { font-family: var(--fuente-titulo); font-size: 12px; margin: 0; letter-spaci
   .feedback { inset: 36px 36px 64px; }
   .aviso-fb { bottom: 90px; }
 }
+
+
+/* =====================================================================
+   v0.4 — figuras a escala común, selector con scroll vertical, panel de batalla compacto
+   ===================================================================== */
+.fig { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 74px; flex: none; }
+.fig img { height: var(--h, 100%); width: auto; max-width: none; }
+.carta { min-width: 0; padding: 8px 2px 4px; }
+.carta .nombre { overflow-wrap: anywhere; }
+.slot { position: relative; height: 92px; padding: 6px 2px 4px; }
+.slot .fig { height: 78px; }
+.slot .quitar {
+  position: absolute; top: -9px; right: -9px; width: 24px; height: 24px;
+  display: grid; place-items: center; font-size: 14px; line-height: 1;
+  background: var(--rojo); color: var(--claro); border: 2px solid var(--negro);
+  box-shadow: 2px 2px 0 var(--negro);
+}
+.slot.lleno:hover .quitar { background: var(--claro); color: var(--rojo); }
+#equipo-grilla { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* cola de turnos: título, el que juega late, y la fila entra deslizándose */
+.cola { gap: 6px; }
+.cola-titulo { flex: none; align-self: center; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 12px; letter-spacing: 1px; color: var(--amarillo); }
+.cola-fichas { display: flex; gap: 3px; align-items: flex-end; }
+.cola-fichas.desliza { animation: desliza .35s steps(5); }
+@keyframes desliza { from { transform: translateX(34px); opacity: .4; } to { transform: none; opacity: 1; } }
+.cola .ficha-cola.ahora { animation: latido 0.9s infinite steps(4); outline: 2px solid var(--amarillo); position: relative; }
+.cola .ficha-cola.ahora::after { content: "▲"; position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); color: var(--amarillo); font-size: 11px; }
+@keyframes latido { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.14); } 60% { transform: scale(1.04); } }
+.cola { padding-bottom: 12px; }
+
+/* panel de batalla compacto: todo entra sin scroll */
+.log { min-height: 0; font-size: 17px; padding: 3px 8px; line-height: 1.1; }
+.actor { flex-direction: row; justify-content: space-between; font-size: 16px; min-height: 0; }
+.movs { gap: 5px; }
+.mov { padding: 4px 8px; }
+.mov .mn { font-size: 19px; display: flex; justify-content: space-between; gap: 6px; }
+.mov .md { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mov .pp { font-size: 15px; color: var(--teal); }
+.mov .pp.poco { color: var(--rojo); }
+.mov:disabled .pp { color: var(--gris); }
+
+@media (min-width: 900px) and (min-height: 560px) {
+  body { font-size: clamp(16px, 2.9vh, 23px); }
+  .crt {
+    --ancho-pantalla: min(calc(94vw - 72px), calc((100dvh - 150px) * 4 / 3), 1040px);
+    margin-bottom: 46px;
+  }
+  .monitor-pie { height: 40px; }
+  .vista { padding: min(26px, 3vh) min(30px, 3vw); gap: min(14px, 1.6vh); }
+  .btn { font-size: clamp(18px, 3.3vh, 26px); }
+  .btn-chico { font-size: clamp(15px, 2.5vh, 20px); }
+
+  .fig { height: min(104px, 12vh); }
+  #col-grilla { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  #col-grilla .carta { min-height: 0; }
+  .carta .nombre { font-size: clamp(14px, 2.2vh, 19px); }
+
+  /* Elegir equipo: todo dentro de la pantalla, el selector se desliza hacia abajo */
+  #v-equipo.activa { overflow: hidden; grid-template-rows: auto auto minmax(0, 1fr) auto; }
+  #equipo-grilla {
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+    overflow-y: auto; overflow-x: hidden; min-height: 0; padding: 4px 8px 4px 2px;
+    scrollbar-color: var(--borde) var(--negro);
+  }
+  .slot { height: min(132px, 17vh); }
+  .slot .fig { height: calc(100% - 4px); }
+
+  /* Batalla */
+  #v-batalla.activa { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); overflow: hidden; padding: min(20px, 2.4vh) 22px; gap: min(12px, 1.5vh); }
+  #v-batalla .panel { min-height: 0; overflow: hidden; gap: min(6px, .8vh); }
+  #v-batalla .cola { min-height: 0; }
+  .cola .ficha-cola { width: min(38px, 5vh); height: min(42px, 5.5vh); }
+  .cola .ficha-cola.ahora { width: min(48px, 6.2vh); height: min(48px, 6.2vh); }
+  .log { font-size: clamp(15px, 2.6vh, 21px); min-height: 0; }
+  .actor { flex-direction: row; font-size: clamp(14px, 2.4vh, 19px); }
+  .mov { padding: min(6px, .8vh) 10px; }
+  .mov .mn { font-size: clamp(16px, 2.9vh, 23px); }
+  .mov .md { font-size: clamp(12px, 2vh, 16px); }
+  .mov .pp { font-size: clamp(13px, 2.2vh, 18px); }
+}
+.panel, .movs, .mov { min-width: 0; }
+.mov .mn > :first-child, .mov .mn { min-width: 0; }
+.mov .pp { flex: none; }
+.mov .mnom { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

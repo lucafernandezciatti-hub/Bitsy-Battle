@@ -49,7 +49,7 @@ Estos son los 4 símbolos que hay que imprimir **al lado de Luca y Donna** en ca
 | 7 | Dragon Ball | ● ♥ ✦ ✦ | Bitsy Goku y Bitsy Vegeta |
 | 8 | Harry Potter | ✦ ✖ ■ ✖ | Bitsy Harry Potter y Bitsy Ron Weasley |
 
-**Código maestro (modo demo):** `✖ ✖ ✖ ✖` desbloquea todas las páginas. Para la entrega conviene cambiarlo o no mostrarlo.
+**Código maestro (modo demo):** `✖ ✖ ✖ ✖` desbloquea todas las páginas, todos los Bitsies y la batalla final. Para la entrega conviene cambiarlo o no mostrarlo.
 
 ## Cómo cambiar cosas
 
@@ -63,6 +63,7 @@ Estos son los 4 símbolos que hay que imprimir **al lado de Luca y Donna** en ca
 - `objetivo`: `rival`, `rivales` (todos), `dos_rivales`, `aliado`, `aliados` (todo el equipo) o `propio`.
 - `poder`: daño base (entre 6 y 20). Sin `poder` no hace daño.
 - `golpes`: cuántas veces pega (default 1).
+- `usos`: cuántas veces se puede usar por batalla, como los PP de Pokémon. Si un Bitsy se queda sin usos en todo, pelea con *Arrebato* (golpe débil).
 - `efectos`: lista de `cura {pct}`, `veneno {turnos}`, `aturdir {turnos}`, `mod {stat, cambio}` (sube o baja ATQ/DEF/VEL), `esquiva`, `al_final`, `copiar`. Con `"a": "propio"` el efecto va a quien lo usa.
 
 **La dificultad:** en `mundos.json`, `"nivel"` de cada rival multiplica sus PV y ATQ (1 = normal).
