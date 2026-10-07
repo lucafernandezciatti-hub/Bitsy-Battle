@@ -23,5 +23,5 @@
   BB.feedback.armar();
   BB.armarTeclado();
   BB.armarEventos();
-  BB.ir('inicio');
+  if (BB.progreso.introVista) BB.ir('inicio'); else BB.mostrarIntro();
 })();

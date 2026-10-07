@@ -29,5 +29,44 @@
     "Yo me quedo acá adentro. Alguien tiene que cuidar los mundos.",
     "Gracias por buscarlos, página por página."
   ],
-  "ayuda_dialogo": "X: VER TODO · TOCÁ O ENTER: SEGUIR"
+  "ayuda_dialogo": "X: VER TODO · TOCÁ O ENTER: SEGUIR",
+  "intro_mensajes": [
+    {
+      "escena": "bitsy",
+      "texto": "¡Hola! ¡Por fin alguien prende la compu! Soy Bitsy."
+    },
+    {
+      "escena": "cafe",
+      "texto": "Te cuento rápido: Luca y Donna estaban terminando el parcial y se les volcó el café encima del teclado."
+    },
+    {
+      "escena": "cafe",
+      "texto": "¡ZZZT! El cortocircuito los chupó adentro de la computadora. Ahora están perdidos entre las páginas de Pixelados."
+    },
+    {
+      "escena": "virus",
+      "texto": "Pero eso no es todo... El café también dejó suelta a una versión corrupta de mí."
+    },
+    {
+      "escena": "copias",
+      "texto": "Anda dando vueltas por la máquina y está fabricando copias de Bitsy corruptas. Cada vez hay más."
+    },
+    {
+      "escena": "desaparece",
+      "texto": "Si no la frenamos, el trabajo de Luca y Donna va a quedar destruido... y yo voy a desaparecer."
+    },
+    {
+      "escena": "alarma",
+      "texto": "Y peor aún... ¡¡¡LUCA Y DONNA VAN A REPROBAR!!!"
+    },
+    {
+      "escena": "bitsy",
+      "texto": "Necesito tu ayuda. Buscá a Luca y Donna en cada página de la revista: al lado tienen cuatro símbolos. Con cada código me pongo un disfraz nuevo y armamos un equipo para pelear."
+    },
+    {
+      "escena": "bitsy",
+      "texto": "¿Estás listo? ¡Vamos a sacarlos de acá!"
+    }
+  ],
+  "intro_alerta": "ALERTA DEL SISTEMA"
 }

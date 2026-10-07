@@ -40,7 +40,8 @@ BB.progresoVacio = function () {
     virusVencido: false,
     sonido: true,
     demo: false,            // el código maestro abre todo, incluida la batalla final
-    ultimoEquipo: []
+    ultimoEquipo: [],
+    introVista: false       // la intro de Bitsy se muestra la primera vez
   };
 };
 

@@ -66,6 +66,64 @@ BB.mostrarSalida = function () {
   });
 };
 
+// ---------------- Intro: la primera vez, Bitsy cuenta qué pasó ----------------
+// Primero un botón "TOCÁ PARA EMPEZAR" (el navegador necesita un toque para que suene la voz),
+// después el diálogo. Cada mensaje tiene una "escena" que cambia lo que se ve arriba.
+BB.mostrarIntro = function () {
+  const T = BB.datos.textos;
+  const msjs = T.intro_mensajes;
+  BB.ir('intro');
+  const escena = $('intro-escena');
+  escena.dataset.escena = 'bitsy';
+  $('intro-titulo').textContent = T.intro_alerta;
+  $('intro-virus').src = BB.sprites.virus.src;
+  // las copias corruptas usan la versión "infectada" (verde/glitch) del fragmento
+  const fr = BB.sprites.fragmento;
+  let srcCopia = fr.src;
+  try { if (fr.infectado && fr.infectado.toDataURL) srcCopia = fr.infectado.toDataURL(); } catch (e) { /* usa el original */ }
+  ['intro-copia1', 'intro-copia2', 'intro-copia3'].forEach((id) => { $(id).src = srcCopia; });
+  $('intro-caja').hidden = true;
+  $('intro-saltar').hidden = true;
+  $('intro-listo').hidden = true;
+  $('intro-ayuda').textContent = '';
+  $('intro-empezar').hidden = false;
+
+  const terminar = () => {
+    BB.dialogo.cancelar();
+    BB.progreso.introVista = true;
+    BB.guardar();
+    BB.audio.sonar('elegir');
+    BB.ir('inicio');
+  };
+  $('intro-listo').onclick = terminar;
+  $('intro-saltar').onclick = terminar;
+  $('intro-empezar').onclick = () => {
+    BB.audio.iniciar();
+    BB.audio.musica(null);
+    BB.audio.sonar('estado');
+    $('intro-empezar').hidden = true;
+    $('intro-caja').hidden = false;
+    $('intro-saltar').hidden = false;
+    $('intro-ayuda').textContent = T.ayuda_dialogo;
+    BB.dialogo.hablar($('intro-txt'), msjs.map((m) => m.texto), {
+      alMensaje: (i) => {
+        const e = msjs[i].escena;
+        if (escena.dataset.escena !== e && (e === 'virus' || e === 'alarma')) BB.audio.sonar(e === 'virus' ? 'estado' : 'error');
+        if (e === 'copias') BB.audio.sonar('baja');
+        escena.dataset.escena = e;
+        $('v-intro').classList.toggle('alarma', e === 'alarma');
+      },
+      alTerminar: () => {
+        $('intro-ayuda').textContent = '';
+        $('intro-saltar').hidden = true;
+        $('intro-listo').hidden = false;
+        $('v-intro').classList.remove('alarma');
+        BB.audio.musica('menu', 300);
+      }
+    });
+  };
+};
+
 // Figura de un Bitsy en una caja de alto fijo: todos se escalan con el mismo factor
 // (según su "alto" en bitsies.json), así los cuerpos quedan del mismo tamaño en todas las tarjetas.
 const ALTO_MAX = 57;
@@ -366,6 +424,7 @@ BB.armarEventos = function () {
   document.querySelector('[data-accion="rapida"]').onclick = () => { BB.audio.sonar('tecla'); BB.batallaRapida(); };
   $('btn-pelear').onclick = () => { BB.audio.sonar('elegir'); BB.empezarBatalla(); };
   $('btn-sonido').onclick = () => { BB.audio.setSonido(!BB.progreso.sonido); BB.pantallas.ajustes(); actualizarMute(); BB.audio.sonar('tecla'); };
+  $('btn-ver-intro').onclick = () => { BB.audio.sonar('tecla'); BB.mostrarIntro(); };
   $('btn-borrar-partida').onclick = () => {
     if (!BB.confirmarBorrado) { BB.confirmarBorrado = true; $('btn-borrar-partida').textContent = '¿SEGURO? TOCÁ DE NUEVO'; BB.audio.sonar('error'); return; }
     BB.borrarProgreso(); equipo = [];

@@ -3,7 +3,7 @@
 window.BB = window.BB || {};
 
 BB.dialogo = (function () {
-  let actual = null; // { el, mensajes, i, pos, timer, completo, alTerminar }
+  let actual = null; // { el, mensajes, i, pos, timer, completo, alTerminar, alMensaje }
   const VELOCIDAD = 34; // ms por letra
 
   function cancelar() {
@@ -40,6 +40,7 @@ BB.dialogo = (function () {
     a.i++; a.pos = 0; a.completo = false;
     a.el.classList.remove('esperando');
     a.el.classList.add('hablando');
+    if (a.alMensaje) a.alMensaje(a.i);
     escribir();
   }
 
@@ -54,10 +55,12 @@ BB.dialogo = (function () {
   });
 
   // mensajes: texto o lista de textos. el: el elemento donde se escribe (también se puede tocar)
-  function hablar(el, mensajes, { alTerminar = null } = {}) {
+  // alMensaje(i): se llama cuando empieza cada mensaje (sirve para cambiar la escena)
+  function hablar(el, mensajes, { alTerminar = null, alMensaje = null } = {}) {
     cancelar();
     const lista = Array.isArray(mensajes) ? mensajes : [mensajes];
-    actual = { el, mensajes: lista, i: 0, pos: 0, timer: null, completo: false, alTerminar };
+    actual = { el, mensajes: lista, i: 0, pos: 0, timer: null, completo: false, alTerminar, alMensaje };
+    if (alMensaje) alMensaje(0);
     el.textContent = '';
     el.classList.add('hablando');
     if (!el.dataset.dialogo) {

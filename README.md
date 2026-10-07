@@ -88,6 +88,10 @@ El botón ✎ (arriba, al lado del ♪) sirve para dejar notas mientras probás 
 
 Al descargar el archivo, las notas se borran del navegador: así cada archivo trae solo las observaciones nuevas. **BORRAR TODO** las borra sin descargarlas. La descarga funciona en GitHub Pages o en tu compu; dentro de la vista previa de Claude el navegador bloquea las descargas.
 
+## Intro
+
+La primera vez que se abre la app, Bitsy cuenta la historia (el café, la Bitsy corrupta y sus copias). Los textos están en `data/textos.json` → `intro_mensajes`: cada mensaje tiene un `texto` y una `escena` (`bitsy`, `cafe`, `virus`, `copias`, `desaparece`, `alarma`) que cambia lo que se ve arriba. Se puede volver a ver desde Ajustes → VER INTRO.
+
 ## Reglas de batalla
 
 - 4 contra 4. Cada ronda actúan todos los vivos, ordenados por VEL (en empate, el jugador primero).

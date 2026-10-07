@@ -21,6 +21,28 @@
       </div>
     </section>
 
+    <!-- INTRO (primera vez) -->
+    <section class="vista" id="v-intro">
+      <div class="centro intro">
+        <h2 class="resultado-titulo glitch-txt" id="intro-titulo">ALERTA DEL SISTEMA</h2>
+        <div class="intro-escena" id="intro-escena" data-escena="bitsy">
+          <img class="sprite intro-copia c1" id="intro-copia1" alt="">
+          <img class="sprite intro-copia c2" id="intro-copia2" alt="">
+          <img class="sprite intro-bitsy" src="assets/bitsies/bitsy_base.png" alt="Bitsy">
+          <span class="intro-cafe" aria-hidden="true">☕</span>
+          <img class="sprite intro-virus" id="intro-virus" alt="Bitsy corrupta">
+          <img class="sprite intro-copia c3" id="intro-copia3" alt="">
+        </div>
+        <button class="btn btn-primario parpadea" id="intro-empezar">▶ TOCÁ PARA EMPEZAR</button>
+        <div class="caja-dialogo" id="intro-caja" hidden><p class="dialogo-txt" id="intro-txt" aria-live="polite"></p></div>
+        <p class="sub" id="intro-ayuda"></p>
+        <div class="fila-btns">
+          <button class="btn btn-chico" id="intro-saltar" hidden>SALTAR INTRO</button>
+          <button class="btn btn-primario" id="intro-listo" hidden>¡VAMOS!</button>
+        </div>
+      </div>
+    </section>
+
     <!-- INICIO -->
     <section class="vista" id="v-inicio">
       <header class="logo">
@@ -129,6 +151,7 @@
       <div class="ventana">
         <div class="menu">
           <button class="btn" id="btn-sonido">SONIDO: SÍ</button>
+          <button class="btn" id="btn-ver-intro">VER INTRO</button>
           <button class="btn btn-peligro" id="btn-borrar-partida">BORRAR PARTIDA</button>
         </div>
         <p class="mensaje" id="ajustes-msg">&nbsp;</p>
