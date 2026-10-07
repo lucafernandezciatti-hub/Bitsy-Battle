@@ -15,7 +15,6 @@
   ],
   "error_codigo": "ERROR 0x0{n}: SEÑAL INVÁLIDA",
   "codigo_repetido": "ESA SEÑAL YA FUE RECUPERADA",
-  "mundo_sin_variante": "Recuperaste la señal de este mundo. Todavía no tengo disfraz para acá, pero ya podés pelear su batalla.",
   "maestro": "MODO DEMO: TODA LA SEÑAL DESBLOQUEADA",
   "victoria": "VICTORIA",
   "derrota": "SEÑAL PERDIDA",

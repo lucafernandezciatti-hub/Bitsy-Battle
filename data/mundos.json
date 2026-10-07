@@ -1,5 +1,5 @@
 {
-  "_ayuda": "codigo = 4 símbolos de ■ ▲ ● ✦ ♥ ✖ (el que va impreso al lado de Luca y Donna). variante = id del Bitsy que se desbloquea (null = ninguno). nivel multiplica los stats del rival.",
+  "_ayuda": "codigo = 4 símbolos de ■ ▲ ● ✦ ♥ ✖ (el que va impreso al lado de Luca y Donna). variantes = ids de los Bitsies que desbloquea esa página. nivel multiplica PV y ATQ del rival.",
   "codigo_maestro": "✖✖✖✖",
   "mundos": [
     {
@@ -7,21 +7,20 @@
       "nombre": "Mundo Mario",
       "pagina": 1,
       "codigo": "▲●✦▲",
-      "variante": "mario",
       "fondo": "assets/mundos/mario.png",
       "equipo_rival": [
-        {
-          "bitsy": "mario",
-          "infectado": true,
-          "nivel": 1.12
-        },
         {
           "bitsy": "fragmento",
           "infectado": true,
           "nivel": 1.0
         },
         {
-          "bitsy": "fragmento",
+          "bitsy": "mario",
+          "infectado": true,
+          "nivel": 1.0
+        },
+        {
+          "bitsy": "luigi",
           "infectado": true,
           "nivel": 1.0
         },
@@ -30,6 +29,10 @@
           "infectado": true,
           "nivel": 1.0
         }
+      ],
+      "variantes": [
+        "mario",
+        "luigi"
       ]
     },
     {
@@ -37,29 +40,32 @@
       "nombre": "Mundo Batman",
       "pagina": 2,
       "codigo": "▲✖■■",
-      "variante": "batman",
       "fondo": "assets/mundos/batman.png",
       "equipo_rival": [
         {
+          "bitsy": "fragmento",
+          "infectado": true,
+          "nivel": 1.05
+        },
+        {
           "bitsy": "batman",
           "infectado": true,
-          "nivel": 1.16
+          "nivel": 1.05
+        },
+        {
+          "bitsy": "robin",
+          "infectado": true,
+          "nivel": 1.05
         },
         {
           "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.04
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.04
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.04
+          "nivel": 1.05
         }
+      ],
+      "variantes": [
+        "batman",
+        "robin"
       ]
     },
     {
@@ -67,29 +73,32 @@
       "nombre": "Mundo Scooby-Doo",
       "pagina": 3,
       "codigo": "▲▲♥▲",
-      "variante": "dafne",
       "fondo": "assets/mundos/scooby_doo.png",
       "equipo_rival": [
         {
+          "bitsy": "fragmento",
+          "infectado": true,
+          "nivel": 1.1
+        },
+        {
           "bitsy": "dafne",
           "infectado": true,
-          "nivel": 1.2
+          "nivel": 1.1
+        },
+        {
+          "bitsy": "fred",
+          "infectado": true,
+          "nivel": 1.1
         },
         {
           "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.08
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.08
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.08
+          "nivel": 1.1
         }
+      ],
+      "variantes": [
+        "dafne",
+        "fred"
       ]
     },
     {
@@ -97,29 +106,32 @@
       "nombre": "Mundo Hello Kitty",
       "pagina": 4,
       "codigo": "✦✖■✦",
-      "variante": "hello_kitty",
       "fondo": "assets/mundos/hello_kitty.png",
       "equipo_rival": [
         {
+          "bitsy": "fragmento",
+          "infectado": true,
+          "nivel": 1.15
+        },
+        {
           "bitsy": "hello_kitty",
           "infectado": true,
-          "nivel": 1.24
+          "nivel": 1.15
+        },
+        {
+          "bitsy": "keroppi",
+          "infectado": true,
+          "nivel": 1.15
         },
         {
           "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.12
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.12
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.12
+          "nivel": 1.15
         }
+      ],
+      "variantes": [
+        "hello_kitty",
+        "keroppi"
       ]
     },
     {
@@ -127,29 +139,32 @@
       "nombre": "Mundo Los Simpsons",
       "pagina": 5,
       "codigo": "♥▲✦■",
-      "variante": "lisa_simpson",
       "fondo": "assets/mundos/los_simpsons.png",
       "equipo_rival": [
         {
+          "bitsy": "fragmento",
+          "infectado": true,
+          "nivel": 1.2
+        },
+        {
           "bitsy": "lisa_simpson",
           "infectado": true,
-          "nivel": 1.28
+          "nivel": 1.2
+        },
+        {
+          "bitsy": "bart",
+          "infectado": true,
+          "nivel": 1.2
         },
         {
           "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.16
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.16
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.16
+          "nivel": 1.2
         }
+      ],
+      "variantes": [
+        "lisa_simpson",
+        "bart"
       ]
     },
     {
@@ -157,29 +172,32 @@
       "nombre": "Mundo Pucca y Garu",
       "pagina": 6,
       "codigo": "✦▲■✖",
-      "variante": "puca",
       "fondo": "assets/mundos/pucca_y_garu.png",
       "equipo_rival": [
         {
+          "bitsy": "fragmento",
+          "infectado": true,
+          "nivel": 1.25
+        },
+        {
           "bitsy": "puca",
           "infectado": true,
-          "nivel": 1.32
+          "nivel": 1.25
+        },
+        {
+          "bitsy": "garu",
+          "infectado": true,
+          "nivel": 1.25
         },
         {
           "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.2
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.2
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.2
+          "nivel": 1.25
         }
+      ],
+      "variantes": [
+        "puca",
+        "garu"
       ]
     },
     {
@@ -187,30 +205,32 @@
       "nombre": "Mundo Dragon Ball",
       "pagina": 7,
       "codigo": "●♥✦✦",
-      "variante": null,
       "fondo": "assets/mundos/dragon_ball.png",
       "equipo_rival": [
         {
-          "bitsy": "archivo",
-          "nombre": "ARCHIVO CORRUPTO",
+          "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.36
+          "nivel": 1.3
+        },
+        {
+          "bitsy": "goku",
+          "infectado": true,
+          "nivel": 1.3
+        },
+        {
+          "bitsy": "vegeta",
+          "infectado": true,
+          "nivel": 1.3
         },
         {
           "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.24
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.24
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.24
+          "nivel": 1.3
         }
+      ],
+      "variantes": [
+        "goku",
+        "vegeta"
       ]
     },
     {
@@ -218,30 +238,32 @@
       "nombre": "Mundo Harry Potter",
       "pagina": 8,
       "codigo": "✦✖■✖",
-      "variante": null,
       "fondo": "assets/mundos/harry_potter.png",
       "equipo_rival": [
         {
-          "bitsy": "archivo",
-          "nombre": "ARCHIVO CORRUPTO",
+          "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.4
+          "nivel": 1.35
+        },
+        {
+          "bitsy": "harry",
+          "infectado": true,
+          "nivel": 1.35
+        },
+        {
+          "bitsy": "ron",
+          "infectado": true,
+          "nivel": 1.35
         },
         {
           "bitsy": "fragmento",
           "infectado": true,
-          "nivel": 1.28
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.28
-        },
-        {
-          "bitsy": "fragmento",
-          "infectado": true,
-          "nivel": 1.28
+          "nivel": 1.35
         }
+      ],
+      "variantes": [
+        "harry",
+        "ron"
       ]
     }
   ],
@@ -253,22 +275,22 @@
       {
         "bitsy": "fragmento",
         "infectado": true,
-        "nivel": 1.3
+        "nivel": 1.43
       },
       {
         "bitsy": "virus",
         "infectado": false,
-        "nivel": 1.25
+        "nivel": 1.38
       },
       {
         "bitsy": "fragmento",
         "infectado": true,
-        "nivel": 1.3
+        "nivel": 1.43
       },
       {
         "bitsy": "fragmento",
         "infectado": true,
-        "nivel": 1.3
+        "nivel": 1.43
       }
     ]
   }

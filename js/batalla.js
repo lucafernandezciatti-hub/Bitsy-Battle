@@ -69,7 +69,7 @@ BB.Batalla = class {
   sfx(n) { if (this.conPantalla) BB.audio.sonar(n); }
   flotar(u, txt, color) {
     if (!this.conPantalla) return;
-    this.flotantes.push({ txt, color, x: COLS[u.idx], y: PISO[u.bando] - 50, t: 0 });
+    this.flotantes.push({ txt, color, x: COLS[u.idx], y: PISO[u.bando] - (BB.sprites[u.id] ? BB.sprites[u.id].alto : 45) - 4, t: 0 });
   }
 
   // ---------------- bucle principal ----------------
@@ -85,7 +85,7 @@ BB.Batalla = class {
       this.revisarFin();
     }
     this.actual = null;
-    if (this.conPantalla) { BB.audio.musica(false); await this.pausa(700); this.dibujando = false; }
+    if (this.conPantalla) { BB.audio.musica(false); await this.pausa(700); this.dibujando = false; window.removeEventListener('resize', this.alRedimensionar); }
     return this.fin;
   }
 
@@ -310,9 +310,10 @@ BB.Batalla = class {
   prepararPantalla() {
     BB.medidasLienzo();
     this.cv = document.getElementById('lienzo');
-    this.cv.width = ANCHO; this.cv.height = ALTO;
     this.cx = this.cv.getContext('2d');
-    this.cx.imageSmoothingEnabled = false;
+    this.ajustarResolucion();
+    this.alRedimensionar = () => this.ajustarResolucion();
+    window.addEventListener('resize', this.alRedimensionar);
     this.fondo = null;
     if (this.fondoSrc) {
       const im = new Image();
@@ -325,12 +326,23 @@ BB.Batalla = class {
     document.getElementById('actor').innerHTML = '';
   }
 
+  // El canvas se dibuja a la resolución real de la pantalla: las coordenadas siguen siendo
+  // las del juego (ANCHO × ALTO) pero cada unidad ocupa S píxeles, así los sprites no pierden calidad.
+  ajustarResolucion() {
+    const ancho = this.cv.clientWidth || ANCHO * 2;
+    const S = Math.max(2, Math.ceil(ancho * (window.devicePixelRatio || 1) / ANCHO));
+    this.cv.width = ANCHO * S; this.cv.height = ALTO * S;
+    this.cx.setTransform(S, 0, 0, S, 0, 0);
+    this.cx.imageSmoothingEnabled = true;
+    this.cx.imageSmoothingQuality = 'high';
+  }
+
   click(ev) {
     if (!this.seleccion) return;
     const r = this.cv.getBoundingClientRect();
     const x = (ev.clientX - r.left) * ANCHO / r.width;
     const y = (ev.clientY - r.top) * ALTO / r.height;
-    const u = this.seleccion.validos.find((v) => Math.abs(COLS[v.idx] - x) <= 23 && y >= PISO[v.bando] - 52 && y <= PISO[v.bando] + 10);
+    const u = this.seleccion.validos.find((v) => Math.abs(COLS[v.idx] - x) <= 23 && y >= PISO[v.bando] - BB.sprites[v.id].alto - 6 && y <= PISO[v.bando] + 10);
     if (u) { BB.audio.sonar('tecla'); this.seleccion.resolver(u); }
   }
 
@@ -435,11 +447,12 @@ BB.Batalla = class {
 
   dibujarUnidad(u, t, parpadeo) {
     const x = this.cx, sp = BB.sprites[u.id];
-    let fuente = u.infectado ? sp.infectado : sp.normal;
+    let fuente = u.infectado ? sp.infectado : sp.img;
     if (!u.vivo) fuente = sp.gris;
     if (u.destello > 0) { fuente = sp.blanco; u.destello--; }
     const cx = COLS[u.idx], piso = PISO[u.bando];
-    let dx = Math.round(cx - fuente.width / 2), dy = piso - fuente.height + u.dy;
+    const w = sp.ancho, h = sp.alto;
+    let dx = cx - w / 2, dy = piso - h + u.dy;
     if (u.temblor > 0) { dx += (u.temblor % 2 ? 2 : -2); u.temblor--; }
 
     // sombra
@@ -448,29 +461,29 @@ BB.Batalla = class {
 
     if (!u.vivo) {
       x.globalAlpha = 0.75;
-      x.drawImage(fuente, dx, dy);
+      x.drawImage(fuente, dx, dy, w, h);
       x.globalAlpha = 1;
       // estática del desconectado
       for (let i = 0; i < 40; i++) {
-        const px = dx + Math.floor(Math.random() * fuente.width), py = dy + Math.floor(Math.random() * fuente.height);
+        const px = Math.floor(dx + Math.random() * w), py = Math.floor(dy + Math.random() * h);
         x.fillStyle = Math.random() < 0.5 ? C.claro : '#5B4FA8';
         x.fillRect(px, py, 1, 1);
       }
       return;
     }
-    if (u.infectado || sp.fallback) BB.dibujarGlitch(x, fuente, dx, dy, u.id === 'virus' ? 1.4 : 0.8);
-    else x.drawImage(fuente, dx, dy);
+    if (u.infectado || sp.fallback) BB.dibujarGlitch(x, fuente, dx, dy, w, h, u.id === 'virus' ? 1.4 : 0.8);
+    else x.drawImage(fuente, dx, dy, w, h);
 
     // turno actual: flecha
     if (this.actual === u && parpadeo) {
       x.fillStyle = C.naranja;
-      const ty = dy - 7;
+      const ty = Math.round(dy - 7);
       x.fillRect(cx - 3, ty, 7, 1); x.fillRect(cx - 2, ty + 1, 5, 1); x.fillRect(cx - 1, ty + 2, 3, 1); x.fillRect(cx, ty + 3, 1, 1);
     }
     // objetivo elegible: corchetes
     if (this.seleccion && this.seleccion.validos.includes(u)) {
       x.fillStyle = parpadeo ? C.naranja : C.claro;
-      const l = cx - 22, r = cx + 21, a = piso - 50, b = piso + 2;
+      const l = cx - 22, r = cx + 21, a = Math.round(piso - h - 4), b = piso + 2;
       [[l, a, 1, 0], [r, a, -1, 0], [l, b, 1, 1], [r, b, -1, 1]].forEach(([px, py, sx, abajo]) => {
         x.fillRect(sx > 0 ? px : px - 4, py, 5, 1);
         x.fillRect(px, abajo ? py - 4 : py, 1, 5);

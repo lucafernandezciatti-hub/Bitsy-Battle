@@ -5,7 +5,9 @@
   BB.cargarProgreso();
   try {
     await BB.cargarDatos();
-    await BB.cargarSprites();
+    await BB.cargarSprites((n, total) => {
+      document.getElementById('cargando-txt').textContent = `CARGANDO BITSIES ${n}/${total}...`;
+    });
   } catch (e) {
     document.getElementById('cargando-txt').innerHTML =
       'ERROR 0xFF: NO SE PUDIERON LEER LOS DATOS.<br><br>' +
@@ -14,6 +16,7 @@
     console.error(e);
     return;
   }
+  BB.feedback.armar();
   BB.armarTeclado();
   BB.armarEventos();
   BB.ir('inicio');

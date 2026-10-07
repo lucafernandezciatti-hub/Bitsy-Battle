@@ -1,21 +1,31 @@
-// sprites.js — carga los PNG de los Bitsies y prepara variantes (infectado, desconectado, destello)
+// sprites.js — carga los PNG de los Bitsies tal cual están (sin reescalar ni tocar colores)
+// y arma, solo para los efectos, versiones infectado / desconectado / destello.
 window.BB = window.BB || {};
 
-BB.sprites = {};  // id → { img, normal, infectado, gris, blanco, fallback }
+BB.sprites = {};  // id → { img, src, alto, ancho, infectado, gris, blanco, fallback }
+
+// Los efectos se calculan sobre una copia de este alto (en px reales), suficiente para pantallas retina
+const ALTO_EFECTOS = 300;
 
 function lienzo(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
 
+function copiaEfectos(img) {
+  const k = Math.min(1, ALTO_EFECTOS / img.height);
+  const c = lienzo(Math.round(img.width * k), Math.round(img.height * k)), x = c.getContext('2d');
+  x.imageSmoothingQuality = 'high';
+  x.drawImage(img, 0, 0, c.width, c.height);
+  return c;
+}
+
 function teñir(img, color, alfa) {
-  const c = lienzo(img.width, img.height), x = c.getContext('2d');
-  x.drawImage(img, 0, 0);
+  const c = copiaEfectos(img), x = c.getContext('2d');
   x.globalCompositeOperation = 'source-atop';
   x.globalAlpha = alfa; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height);
   return c;
 }
 
 function enGris(img) {
-  const c = lienzo(img.width, img.height), x = c.getContext('2d');
-  x.drawImage(img, 0, 0);
+  const c = copiaEfectos(img), x = c.getContext('2d');
   const d = x.getImageData(0, 0, c.width, c.height);
   for (let i = 0; i < d.data.length; i += 4) {
     const g = (d.data[i] * 0.3 + d.data[i + 1] * 0.59 + d.data[i + 2] * 0.11) * 0.55;
@@ -30,7 +40,8 @@ function infectar(img) {
   const c = teñir(img, '#19E3D0', 0.35), x = c.getContext('2d');
   x.globalCompositeOperation = 'source-atop';
   x.fillStyle = 'rgba(255,51,88,.6)';
-  for (let y = 3; y < c.height; y += 9) x.fillRect(0, y, c.width, 1);
+  const paso = Math.max(4, Math.round(c.height / 16));
+  for (let y = 3; y < c.height; y += paso) x.fillRect(0, y, c.width, Math.max(1, Math.round(paso / 7)));
   return c;
 }
 
@@ -43,34 +54,38 @@ function cargarImagen(src) {
   });
 }
 
-BB.cargarSprites = async function () {
+BB.cargarSprites = async function (alAvanzar) {
   const base = await cargarImagen('assets/bitsies/bitsy_base.png');
-  for (const b of BB.datos.bitsies) {
+  let hechos = 0;
+  await Promise.all(BB.datos.bitsies.map(async (b) => {
     let img = await cargarImagen(b.sprite);
     let fallback = false;
     if (!img) { img = base; fallback = true; } // falta el PNG → silueta de la Base con glitch
+    const alto = fallback ? 45 : (b.alto || 45);
     BB.sprites[b.id] = {
       img, fallback,
       src: fallback ? 'assets/bitsies/bitsy_base.png' : b.sprite,
-      normal: img,
+      alto, ancho: alto * img.width / img.height,
       infectado: infectar(img),
       gris: enGris(img),
       blanco: teñir(img, '#FBF8FF', 1)
     };
-  }
-  // los secuaces y guardianes sin disfraz son siluetas de la Base, siempre glitcheadas
-  ['fragmento', 'archivo'].forEach((id) => { if (BB.sprites[id]) BB.sprites[id].fallback = true; });
+    hechos++;
+    if (alAvanzar) alAvanzar(hechos, BB.datos.bitsies.length);
+  }));
+  // los secuaces son siluetas de la Base, siempre glitcheadas
+  if (BB.sprites.fragmento) BB.sprites.fragmento.fallback = true;
 };
 
-// Dibuja un sprite con cortes horizontales desplazados (efecto glitch)
-BB.dibujarGlitch = function (x, fuente, dx, dy, intensidad = 1) {
-  const h = fuente.height, w = fuente.width;
+// Dibuja un sprite (de cualquier resolución) en un rectángulo del canvas, cortado en franjas desplazadas
+BB.dibujarGlitch = function (x, fuente, dx, dy, w, h, intensidad = 1) {
+  const k = fuente.height / h;
   let y = 0;
   while (y < h) {
-    const alto = 2 + Math.floor(Math.random() * 6);
-    const corr = Math.random() < 0.35 * intensidad ? Math.round((Math.random() * 2 - 1) * 3 * intensidad) : 0;
-    x.drawImage(fuente, 0, y, w, Math.min(alto, h - y), dx + corr, dy + y, w, Math.min(alto, h - y));
-    y += alto;
+    const franja = Math.min(2 + Math.random() * 5, h - y);
+    const corr = Math.random() < 0.35 * intensidad ? (Math.random() * 2 - 1) * 3 * intensidad : 0;
+    x.drawImage(fuente, 0, y * k, fuente.width, franja * k, dx + corr, dy + y, w, franja);
+    y += franja;
   }
 };
 

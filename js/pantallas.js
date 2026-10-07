@@ -22,7 +22,7 @@ BB.pintarSenal = function (cont, nuevo = -1) {
 };
 
 // ---------------- Ficha de un Bitsy (modal) ----------------
-BB.mostrarFicha = function (id, { revelar = false, aviso = '' } = {}) {
+BB.mostrarFicha = function (id, { revelar = false, aviso = '', alCerrar = null } = {}) {
   const d = BB.datos.porId[id];
   const sp = BB.sprites[id];
   const stat = (nom, v, max) => `<div class="stat"><span>${nom}</span><span class="barra"><i style="width:${Math.round(v / max * 100)}%"></i></span><span>${v}</span></div>`;
@@ -36,7 +36,8 @@ BB.mostrarFicha = function (id, { revelar = false, aviso = '' } = {}) {
     <ul>${d.movimientos.map((m) => `<li>${m.nombre}<small>${m.desc}</small></li>`).join('')}</ul>
     <button class="btn btn-primario" id="ficha-cerrar">CERRAR</button>`;
   $('modal').hidden = false;
-  $('ficha-cerrar').onclick = () => { BB.audio.sonar('tecla'); $('modal').hidden = true; };
+  $('ficha-cerrar').textContent = alCerrar ? 'SIGUIENTE ►' : 'CERRAR';
+  $('ficha-cerrar').onclick = () => { BB.audio.sonar('tecla'); $('modal').hidden = true; if (alCerrar) alCerrar(); };
 };
 
 BB.carta = function (id, { bloqueada = false, badge = '' } = {}) {
@@ -77,7 +78,7 @@ BB.pantallas = {
       c.onclick = () => {
         BB.audio.sonar('tecla');
         if (bloq) {
-          const m = BB.datos.mundos.find((x) => x.variante === b.id);
+          const m = BB.datos.mundos.find((x) => (x.variantes || []).includes(b.id));
           $('ficha').innerHTML = `<p class="terminal">ARCHIVO BLOQUEADO</p><p>${m ? `Encontrá a Luca y Donna en la página ${m.pagina} (${m.nombre}).` : 'Vencé al Virus para recuperarlo.'}</p><button class="btn btn-primario" id="ficha-cerrar">CERRAR</button>`;
           $('modal').hidden = false;
           $('ficha-cerrar').onclick = () => { $('modal').hidden = true; };
@@ -180,7 +181,7 @@ function verificarCodigo() {
   if (cod === BB.datos.maestro) {
     BB.datos.mundos.forEach((m) => {
       if (!BB.progreso.encontrados.includes(m.id)) BB.progreso.encontrados.push(m.id);
-      if (m.variante && !BB.desbloqueado(m.variante)) BB.progreso.desbloqueados.push(m.variante);
+      (m.variantes || []).forEach((id) => { if (!BB.desbloqueado(id)) BB.progreso.desbloqueados.push(id); });
     });
     BB.guardar();
     BB.audio.sonar('desbloqueo');
@@ -213,13 +214,17 @@ function verificarCodigo() {
   BB.audio.sonar('desbloqueo');
   msg.className = 'mensaje';
   msg.textContent = `SEÑAL DE ${mundo.nombre.toUpperCase()} RECUPERADA`;
-  if (mundo.variante && !BB.desbloqueado(mundo.variante)) {
-    BB.progreso.desbloqueados.push(mundo.variante);
-    BB.guardar();
-    setTimeout(() => BB.mostrarFicha(mundo.variante, { revelar: true, aviso: '¡NUEVO DISFRAZ!' }), 500);
-  } else {
-    BB.guardar();
-    $('ingresar-pista').textContent = T.mundo_sin_variante;
+  const nuevos = (mundo.variantes || []).filter((id) => BB.datos.porId[id] && !BB.desbloqueado(id));
+  nuevos.forEach((id) => BB.progreso.desbloqueados.push(id));
+  BB.guardar();
+  if (nuevos.length) {
+    // se muestran de a uno: al cerrar la primera ficha aparece la segunda
+    const mostrar = (i) => BB.mostrarFicha(nuevos[i], {
+      revelar: true,
+      aviso: nuevos.length > 1 ? `¡NUEVO DISFRAZ! ${i + 1}/${nuevos.length}` : '¡NUEVO DISFRAZ!',
+      alCerrar: i + 1 < nuevos.length ? () => mostrar(i + 1) : null
+    });
+    setTimeout(() => mostrar(0), 500);
   }
   BB.codigo = [];
   setTimeout(pintarCasilleros, 900);
@@ -276,7 +281,9 @@ BB.empezarBatalla = async function () {
   const combate = BB.combate;
   BB.ir('batalla');
   const b = new BB.Batalla({ jugador, rival: combate.rival, fondo: combate.fondo });
+  BB.batallaActual = b;
   const res = await b.jugar();
+  BB.batallaActual = null;
   mostrarResultado(res, combate);
 };
 

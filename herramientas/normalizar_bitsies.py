@@ -1,45 +1,49 @@
-"""Normaliza los Bitsies para la app con UNA escala común (la de la Bitsy Base).
-pixelar.py lleva cada figura a 45 px de alto total, así que orejas, pelo o gorro achican el cuerpo.
-Acá todas usan el factor de la Base y los cuerpos quedan iguales. Uso, desde la carpeta Pixelados:
-    python bitsy-battle/herramientas/normalizar_bitsies.py
+"""Prepara los PNG de los Bitsies para la app SIN tocar el dibujo.
+
+Hace solo dos cosas:
+  1. vuelve transparente el fondo blanco (solo los píxeles de fondo conectados al borde),
+  2. recorta el espacio vacío alrededor del personaje.
+No reescala, no cambia colores, no cuantiza. Además imprime el valor "alto" para data/bitsies.json,
+que hace que todos los cuerpos se vean del mismo tamaño en la batalla.
+
+Uso (necesita pillow, numpy y scipy):
+    python normalizar_bitsies.py "<carpeta BitsiesSinBases>" "<carpeta assets/bitsies del repo>"
 """
 import sys, pathlib
-sys.path.insert(0, '.')  # correr desde la carpeta Pixelados
-import pixelar
-from PIL import Image, ImageEnhance
 import numpy as np
-SRC = pathlib.Path('Bitsies')
-OUT = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'bitsy-battle/assets/bitsies'); OUT.mkdir(parents=True, exist_ok=True)
-ARCH = {'base':'Bitsy base.jpg','mario':'Bitsy Mario.jpg','batman':'Bitsy Batman.jpg','dafne':'Bitsy Dafne.jpg',
-        'hello_kitty':'Bitsy Hello Kitty.jpg','lisa_simpson':'Bitsy Lisa Simpson.jpg','puca':'Bitsy Puca.jpg','virus':'Bitsy virus.jpg'}
-def figura(nombre):
-    im = Image.open(SRC/ARCH[nombre])
-    if im.width > 2000: im = im.resize((im.width//2, im.height//2), Image.BOX)
-    corte = round(im.height * 0.74)
-    im = im.crop((0, 0, im.width, corte))
-    im = pixelar.quitar_fondo(im, 40)
-    return pixelar.recortar(im, True)
-base = figura('base')
-factor = 45 / base.height
-print('altura Base en el JPG:', base.height, 'px → factor', round(factor, 4))
-for n in ARCH:
-    f = figura(n)
-    alto = max(1, round(f.height * factor))
-    chico = pixelar.a_grilla(f, alto)
-    # color: saturación un poco más alta y paleta propia de 32 colores (sin la paleta congelada de 48)
-    rgb = ImageEnhance.Color(chico.convert('RGB')).enhance(1.2)
-    q = rgb.quantize(colors=32, method=Image.MEDIANCUT, dither=Image.Dither.NONE).convert('RGB')
-    out = q.convert('RGBA'); out.putalpha(chico.getchannel('A'))
-    # saca las filas de pedestal (piedra gris) que quedan bajo los pies
-    a = np.array(out)
-    while a.shape[0] > 10:
-        fila = a[-1]; op = fila[:, 3] > 0
-        if not op.any(): a = a[:-1]; continue
-        px = fila[op][:, :3].astype(float)
-        mx, mn = px.max(1), px.min(1); lum = px.mean(1)
-        piedra = ((mx - mn) < 45) & (lum > 60) & (lum < 200)
-        if piedra.mean() > 0.5 and op.sum() > 0.6 * a.shape[1]: a = a[:-1]
-        else: break
-    out = Image.fromarray(a, 'RGBA')
-    out.save(OUT/f'bitsy_{n}.png')
-    print(f'{n:13s} JPG {f.width}x{f.height} → {out.width}x{out.height}')
+from PIL import Image
+from scipy import ndimage
+
+# Nombre del archivo original → id en bitsies.json. Para un Bitsy nuevo, agregalo acá.
+NOMBRES = {'BitsyBase': 'base', 'BitsyMario': 'mario', 'BitsyBatman': 'batman', 'BitsyDafne': 'dafne',
+           'BitsyHelloKitty': 'hello_kitty', 'BitsyLisa': 'lisa_simpson', 'BitsyPuca': 'puca', 'BitsyVirus': 'virus',
+           'Bitsy Luigi': 'luigi', 'Bitsy Robin': 'robin', 'Bitsy Fred': 'fred', 'Bitsy Keroppi': 'keroppi',
+           'Bitsy Bart': 'bart', 'Bitsy Garu': 'garu', 'Bitsy Goku': 'goku', 'Bitsy Vegeta': 'vegeta',
+           'Bitsy Harry Potter': 'harry', 'Bitsy Ron Weasly': 'ron'}
+
+# Referencia de escala: la Bitsy Base, dibujada en un lienzo de 1195 px de ancho, mide 589 px de alto
+# y en el juego mide 45 unidades. Los originales están dibujados en proporción al ancho de su lienzo.
+ANCHO_REF, ALTO_BASE, ALTO_JUEGO = 1195, 589, 45
+
+src, dst = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
+dst.mkdir(parents=True, exist_ok=True)
+for f in sorted(src.glob('*.png')):
+    if f.stem not in NOMBRES:
+        print('sin id (agregalo a NOMBRES):', f.name); continue
+    original = Image.open(f).convert('RGB')
+    rgb = np.array(original).astype(int)
+    blanco = (rgb.min(axis=2) >= 235) & ((rgb.max(axis=2) - rgb.min(axis=2)) <= 18)
+    et, _ = ndimage.label(blanco)
+    borde = set(et[0]) | set(et[-1]) | set(et[:, 0]) | set(et[:, -1]); borde.discard(0)
+    fondo = np.isin(et, list(borde))
+    fig, n = ndimage.label(~fondo)
+    if n > 1:  # descarta motas sueltas lejos del personaje
+        tam = ndimage.sum(~fondo, fig, range(1, n + 1))
+        cerca = ndimage.binary_dilation(fig == int(np.argmax(tam)) + 1, iterations=25)
+        fondo |= ~cerca
+    im = Image.fromarray(np.dstack([rgb.astype(np.uint8), np.where(fondo, 0, 255).astype(np.uint8)]), 'RGBA')
+    im = im.crop(im.getchannel('A').getbbox())
+    nombre = NOMBRES[f.stem]
+    im.save(dst / f'bitsy_{nombre}.png', optimize=True)
+    alto = round(im.height * ANCHO_REF / original.width * ALTO_JUEGO / ALTO_BASE, 1)
+    print(f'{nombre:13s} {im.width}x{im.height}px  →  "alto": {alto}')

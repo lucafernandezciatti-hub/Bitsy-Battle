@@ -146,6 +146,28 @@
 
   </div>
   <button class="mute" id="mute" aria-label="Silenciar">♪</button>
+  <button class="btn-feedback" id="btn-feedback" aria-label="Escribir feedback" title="Feedback">✎</button>
+  <p class="aviso-fb" id="aviso-fb" role="status" hidden></p>
+
+  <!-- FEEDBACK (notas de prueba con captura) -->
+  <div class="feedback" id="feedback" hidden>
+    <div class="ventana fb-ventana" role="dialog" aria-labelledby="fb-titulo">
+      <div class="barra-titulo"><h2 id="fb-titulo">FEEDBACK</h2><span class="contador" id="fb-pantalla"></span></div>
+      <img class="fb-miniatura" id="fb-miniatura" alt="Captura de la pantalla del juego">
+      <p class="sub" id="fb-sin-captura" hidden>NO SE PUDO SACAR LA CAPTURA. LA NOTA SE GUARDA IGUAL.</p>
+      <label class="sub fb-ayuda" for="fb-texto">ENTER GUARDA · SHIFT+ENTER BAJA DE LÍNEA · ESC CIERRA</label>
+      <textarea id="fb-texto" rows="3" placeholder="¿Qué viste? ¿Qué cambiarías?"></textarea>
+      <div class="fila-btns">
+        <button class="btn" id="fb-cancelar">CANCELAR</button>
+        <button class="btn btn-primario" id="fb-guardar">GUARDAR</button>
+      </div>
+      <p class="sub" id="fb-contador"></p>
+      <div class="fila-btns">
+        <button class="btn btn-chico" id="fb-descargar">DESCARGAR ARCHIVO</button>
+        <button class="btn btn-chico btn-peligro" id="fb-borrar">BORRAR TODO</button>
+      </div>
+    </div>
+  </div>
   <span class="monitor-marca" aria-hidden="true">PIXELADOS · PX-486</span>
   <span class="monitor-led" aria-hidden="true"></span>
   <span class="monitor-pie" aria-hidden="true"></span>
@@ -156,6 +178,7 @@
 <script src="js/sprites.js"></script>
 <script src="js/batalla.js"></script>
 <script src="js/pantallas.js"></script>
+<script src="js/feedback.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

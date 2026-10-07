@@ -21,14 +21,16 @@ bitsy-battle/
 │   ├── sprites.js      carga los PNG y arma las versiones infectado / desconectado
 │   ├── batalla.js      motor de batalla, CPU y dibujo en el canvas
 │   ├── pantallas.js    menús: inicio, señal, colección, mapa, equipo, resultado
+│   ├── feedback.js     botón ✎: notas con captura y descarga del archivo
+│   ├── vendor/         html2canvas (saca las capturas del feedback)
 │   └── main.js         arranque
 ├── data/
 │   ├── bitsies.json    stats y movimientos
 │   ├── mundos.json     códigos de cada página, fondos y equipos rivales
 │   └── textos.json     lo que dice Bitsy y los mensajes del sistema
 └── assets/
-    ├── bitsies/        sprites (salidos de pixelar.py, 45 px de alto)
-    ├── mundos/         fondos de batalla (las escenas reducidas a 384×256)
+    ├── bitsies/        los dibujos originales, con fondo transparente
+    ├── mundos/         fondos de batalla (las escenas originales)
     └── personajes/     Luca y Donna para la pantalla final
 ```
 
@@ -38,14 +40,14 @@ Estos son los 4 símbolos que hay que imprimir **al lado de Luca y Donna** en ca
 
 | Página | Mundo | Código | Desbloquea |
 | --- | --- | --- | --- |
-| 1 | Mario | ▲ ● ✦ ▲ | Bitsy Mario |
-| 2 | Batman | ▲ ✖ ■ ■ | Bitsy Batman |
-| 3 | Scooby-Doo | ▲ ▲ ♥ ▲ | Bitsy Dafne |
-| 4 | Hello Kitty | ✦ ✖ ■ ✦ | Bitsy Hello Kitty |
-| 5 | Los Simpsons | ♥ ▲ ✦ ■ | Bitsy Lisa Simpson |
-| 6 | Pucca y Garu | ✦ ▲ ■ ✖ | Bitsy Puca |
-| 7 | Dragon Ball | ● ♥ ✦ ✦ | (sin variante todavía) |
-| 8 | Harry Potter | ✦ ✖ ■ ✖ | (sin variante todavía) |
+| 1 | Mario | ▲ ● ✦ ▲ | Bitsy Mario y Bitsy Luigi |
+| 2 | Batman | ▲ ✖ ■ ■ | Bitsy Batman y Bitsy Robin |
+| 3 | Scooby-Doo | ▲ ▲ ♥ ▲ | Bitsy Dafne y Bitsy Fred |
+| 4 | Hello Kitty | ✦ ✖ ■ ✦ | Bitsy Hello Kitty y Bitsy Keroppi |
+| 5 | Los Simpsons | ♥ ▲ ✦ ■ | Bitsy Lisa Simpson y Bitsy Bart |
+| 6 | Pucca y Garu | ✦ ▲ ■ ✖ | Bitsy Puca y Bitsy Garu |
+| 7 | Dragon Ball | ● ♥ ✦ ✦ | Bitsy Goku y Bitsy Vegeta |
+| 8 | Harry Potter | ✦ ✖ ■ ✖ | Bitsy Harry Potter y Bitsy Ron Weasley |
 
 **Código maestro (modo demo):** `✖ ✖ ✖ ✖` desbloquea todas las páginas. Para la entrega conviene cambiarlo o no mostrarlo.
 
@@ -65,17 +67,25 @@ Estos son los 4 símbolos que hay que imprimir **al lado de Luca y Donna** en ca
 
 **La dificultad:** en `mundos.json`, `"nivel"` de cada rival multiplica sus PV y ATQ (1 = normal).
 
-**Un sprite:** poné el PNG en `assets/bitsies/` y apuntalo desde `"sprite"` en `bitsies.json`. Los sprites de la app se generan con `herramientas/normalizar_bitsies.py` (usa las funciones de `pixelar.py`). Desde la carpeta Pixelados:
+**Un sprite:** los PNG de `assets/bitsies/` son los dibujos originales de `Pixelados/Bitsies/BitsiesSinBases`, con dos únicos cambios: fondo blanco transparente y recorte del espacio vacío. No se reescalan ni se tocan los colores. Para regenerarlos:
 
 ```
-python bitsy-battle/herramientas/normalizar_bitsies.py
+python herramientas/normalizar_bitsies.py "<ruta a BitsiesSinBases>" assets/bitsies
 ```
 
-A diferencia de `pixelar.py`, que lleva cada figura a 45 px de alto total, este script usa **la misma escala para todos** (la de la Bitsy Base). Así las orejas de Batman o el pelo de Lisa suman altura en vez de achicar el cuerpo. Tampoco usa la paleta congelada de 48 colores (que no tiene amarillo ni violeta): cada sprite lleva sus colores originales un poco más saturados. Para un Bitsy nuevo, agregá su JPG al diccionario `ARCH` del script.
+El script imprime el valor `"alto"` de cada uno: copialo en `data/bitsies.json`. Ese número hace que todos los cuerpos se vean del mismo tamaño en la batalla (la Base mide 45).
 
-Si un sprite falta o no carga, la app muestra la silueta de la Base con glitch.
+**Agregar un Bitsy:** poné su PNG en `BitsiesSinBases`, sumalo al diccionario `NOMBRES` del script y corrélo. Después agregalo a `bitsies.json` (copiá uno y cambiá `id`, nombre, sprite, alto, stats y movimientos) y sumá su id a `"variantes"` del mundo que corresponda en `mundos.json`.
 
-**Agregar un Bitsy para Dragon Ball o Harry Potter:** sumalo a `bitsies.json` (copiá uno y cambiá `id`, nombre, sprite, stats y movimientos) y en `mundos.json` poné ese `id` en `"variante"` del mundo. Para que el guardián de ese mundo sea el nuevo Bitsy, cambiá `"bitsy": "archivo"` por el nuevo id.
+## Feedback
+
+El botón ✎ (arriba, al lado del ♪) sirve para dejar notas mientras probás el juego:
+
+1. Tocá ✎: la app saca una captura de lo que se ve en ese momento.
+2. Escribí la observación y apretá **Enter** (Shift+Enter baja de línea, Esc cierra).
+3. Cuando termines, abrí ✎ otra vez y tocá **DESCARGAR ARCHIVO**: baja un `bitsy-feedback-AAAA-MM-DD.json` con todas las notas, sus capturas y el estado del juego (pantalla, turno, PV de cada Bitsy). Ese archivo es el que se le pasa a Claude.
+
+Las notas quedan guardadas en ese navegador hasta que toques **BORRAR TODO**. La descarga funciona en GitHub Pages o en tu compu; dentro de la vista previa de Claude el navegador bloquea las descargas.
 
 ## Reglas de batalla
 

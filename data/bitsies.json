@@ -1,19 +1,52 @@
 {
-  "_ayuda": "Cada Bitsy: stats (pv, atq, def, vel) y 3 movimientos. objetivo: rival | rivales | dos_rivales | aliado | aliados | propio. efectos: cura{pct} · veneno{turnos} · aturdir{turnos} · mod{stat, cambio} · esquiva · al_final · copiar. 'a' dice a quién va el efecto: objetivo (default) | propio | aliados.",
+  "_ayuda": "Cada Bitsy: stats (pv, atq, def, vel) y 3 movimientos. objetivo: rival | rivales | dos_rivales | aliado | aliados | propio. efectos: cura{pct} · veneno{turnos} · aturdir{turnos} · mod{stat, cambio} · esquiva · al_final · copiar. 'a' dice a quién va el efecto: objetivo (default) | propio | aliados. 'alto' = altura en unidades del canvas (la Base mide 45); está calculada para que todos los cuerpos tengan el mismo tamaño.",
   "bitsies": [
     {
       "id": "base",
       "nombre": "Bitsy Base",
       "rol": "Comodín",
       "sprite": "assets/bitsies/bitsy_base.png",
+      "alto": 45.0,
       "desbloqueo": "inicio",
       "jugable": true,
       "repetible": true,
-      "stats": { "pv": 90, "atq": 9, "def": 9, "vel": 9 },
+      "stats": {
+        "pv": 90,
+        "atq": 9,
+        "def": 9,
+        "vel": 9
+      },
       "movimientos": [
-        { "id": "golpe_pixel", "nombre": "Golpe pixel", "desc": "Daño a un rival", "objetivo": "rival", "poder": 14 },
-        { "id": "reiniciar", "nombre": "Reiniciar", "desc": "Cura 20% a un aliado", "objetivo": "aliado", "efectos": [{ "tipo": "cura", "pct": 20 }] },
-        { "id": "copiar", "nombre": "Copiar", "desc": "Repite el último movimiento aliado", "objetivo": "propio", "efectos": [{ "tipo": "copiar" }] }
+        {
+          "id": "golpe_pixel",
+          "nombre": "Golpe pixel",
+          "desc": "Daño a un rival",
+          "objetivo": "rival",
+          "poder": 14
+        },
+        {
+          "id": "reiniciar",
+          "nombre": "Reiniciar",
+          "desc": "Cura 20% a un aliado",
+          "objetivo": "aliado",
+          "efectos": [
+            {
+              "tipo": "cura",
+              "pct": 20
+            }
+          ]
+        },
+        {
+          "id": "copiar",
+          "nombre": "Copiar",
+          "desc": "Repite el último movimiento aliado",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "copiar"
+            }
+          ]
+        }
       ]
     },
     {
@@ -21,13 +54,105 @@
       "nombre": "Bitsy Mario",
       "rol": "Atacante ágil",
       "sprite": "assets/bitsies/bitsy_mario.png",
+      "alto": 48.7,
       "desbloqueo": "mundo",
       "jugable": true,
-      "stats": { "pv": 80, "atq": 12, "def": 7, "vel": 13 },
+      "stats": {
+        "pv": 80,
+        "atq": 12,
+        "def": 7,
+        "vel": 13
+      },
       "movimientos": [
-        { "id": "salto", "nombre": "Salto", "desc": "Daño y esquiva el próximo golpe", "objetivo": "rival", "poder": 13, "efectos": [{ "tipo": "esquiva", "a": "propio" }] },
-        { "id": "bola_fuego", "nombre": "Bola de fuego", "desc": "Daño fuerte a un rival", "objetivo": "rival", "poder": 18 },
-        { "id": "hongo", "nombre": "Hongo", "desc": "Sube su propio ATQ", "objetivo": "propio", "efectos": [{ "tipo": "mod", "stat": "atq", "cambio": 1 }] }
+        {
+          "id": "salto",
+          "nombre": "Salto",
+          "desc": "Daño y esquiva el próximo golpe",
+          "objetivo": "rival",
+          "poder": 13,
+          "efectos": [
+            {
+              "tipo": "esquiva",
+              "a": "propio"
+            }
+          ]
+        },
+        {
+          "id": "bola_fuego",
+          "nombre": "Bola de fuego",
+          "desc": "Daño fuerte a un rival",
+          "objetivo": "rival",
+          "poder": 18
+        },
+        {
+          "id": "hongo",
+          "nombre": "Hongo",
+          "desc": "Sube su propio ATQ",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "luigi",
+      "nombre": "Bitsy Luigi",
+      "rol": "Apoyo valiente",
+      "sprite": "assets/bitsies/bitsy_luigi.png",
+      "alto": 48.7,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 90,
+        "atq": 10,
+        "def": 10,
+        "vel": 11
+      },
+      "movimientos": [
+        {
+          "id": "salto_alto",
+          "nombre": "Salto alto",
+          "desc": "Daño y esquiva el próximo golpe",
+          "objetivo": "rival",
+          "poder": 12,
+          "efectos": [
+            {
+              "tipo": "esquiva",
+              "a": "propio"
+            }
+          ]
+        },
+        {
+          "id": "linterna",
+          "nombre": "Linterna",
+          "desc": "Daño leve y aturde 1 turno",
+          "objetivo": "rival",
+          "poder": 6,
+          "efectos": [
+            {
+              "tipo": "aturdir",
+              "turnos": 1
+            }
+          ]
+        },
+        {
+          "id": "hermanos",
+          "nombre": "Hermanos",
+          "desc": "Sube el ATQ de todo el equipo",
+          "objetivo": "aliados",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": 1
+            }
+          ]
+        }
       ]
     },
     {
@@ -35,13 +160,98 @@
       "nombre": "Bitsy Batman",
       "rol": "Táctico",
       "sprite": "assets/bitsies/bitsy_batman.png",
+      "alto": 48.7,
       "desbloqueo": "mundo",
       "jugable": true,
-      "stats": { "pv": 95, "atq": 11, "def": 11, "vel": 10 },
+      "stats": {
+        "pv": 95,
+        "atq": 11,
+        "def": 11,
+        "vel": 10
+      },
       "movimientos": [
-        { "id": "batarang", "nombre": "Batarang", "desc": "Golpea a 2 rivales", "objetivo": "dos_rivales", "poder": 11 },
-        { "id": "sombra", "nombre": "Sombra", "desc": "Actúa último la próxima ronda y esquiva", "objetivo": "propio", "efectos": [{ "tipo": "al_final" }, { "tipo": "esquiva" }] },
-        { "id": "gadget", "nombre": "Gadget", "desc": "Daño y baja la DEF rival", "objetivo": "rival", "poder": 8, "efectos": [{ "tipo": "mod", "stat": "def", "cambio": -1 }] }
+        {
+          "id": "batarang",
+          "nombre": "Batarang",
+          "desc": "Golpea a 2 rivales",
+          "objetivo": "dos_rivales",
+          "poder": 11
+        },
+        {
+          "id": "sombra",
+          "nombre": "Sombra",
+          "desc": "Actúa último la próxima ronda y esquiva",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "al_final"
+            },
+            {
+              "tipo": "esquiva"
+            }
+          ]
+        },
+        {
+          "id": "gadget",
+          "nombre": "Gadget",
+          "desc": "Daño y baja la DEF rival",
+          "objetivo": "rival",
+          "poder": 8,
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "def",
+              "cambio": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "robin",
+      "nombre": "Bitsy Robin",
+      "rol": "Ágil",
+      "sprite": "assets/bitsies/bitsy_robin.png",
+      "alto": 50.5,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 80,
+        "atq": 11,
+        "def": 8,
+        "vel": 14
+      },
+      "movimientos": [
+        {
+          "id": "baston",
+          "nombre": "Bastón",
+          "desc": "Daño a un rival",
+          "objetivo": "rival",
+          "poder": 13
+        },
+        {
+          "id": "acrobacia",
+          "nombre": "Acrobacia",
+          "desc": "Esquiva y sube su VEL",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "esquiva"
+            },
+            {
+              "tipo": "mod",
+              "stat": "vel",
+              "cambio": 1
+            }
+          ]
+        },
+        {
+          "id": "duo_dinamico",
+          "nombre": "Dúo dinámico",
+          "desc": "Golpea a 2 rivales",
+          "objetivo": "dos_rivales",
+          "poder": 9
+        }
       ]
     },
     {
@@ -49,13 +259,108 @@
       "nombre": "Bitsy Dafne",
       "rol": "Control",
       "sprite": "assets/bitsies/bitsy_dafne.png",
+      "alto": 47.9,
       "desbloqueo": "mundo",
       "jugable": true,
-      "stats": { "pv": 85, "atq": 8, "def": 10, "vel": 11 },
+      "stats": {
+        "pv": 85,
+        "atq": 8,
+        "def": 10,
+        "vel": 11
+      },
       "movimientos": [
-        { "id": "trampa", "nombre": "Trampa", "desc": "Daño leve y aturde 1 turno", "objetivo": "rival", "poder": 7, "efectos": [{ "tipo": "aturdir", "turnos": 1 }] },
-        { "id": "una_pista", "nombre": "¡Una pista!", "desc": "Sube el ATQ de un aliado", "objetivo": "aliado", "efectos": [{ "tipo": "mod", "stat": "atq", "cambio": 1 }] },
-        { "id": "escape", "nombre": "Escape", "desc": "Esquiva y se cura 10%", "objetivo": "propio", "efectos": [{ "tipo": "esquiva" }, { "tipo": "cura", "pct": 10 }] }
+        {
+          "id": "trampa",
+          "nombre": "Trampa",
+          "desc": "Daño leve y aturde 1 turno",
+          "objetivo": "rival",
+          "poder": 7,
+          "efectos": [
+            {
+              "tipo": "aturdir",
+              "turnos": 1
+            }
+          ]
+        },
+        {
+          "id": "una_pista",
+          "nombre": "¡Una pista!",
+          "desc": "Sube el ATQ de un aliado",
+          "objetivo": "aliado",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": 1
+            }
+          ]
+        },
+        {
+          "id": "escape",
+          "nombre": "Escape",
+          "desc": "Esquiva y se cura 10%",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "esquiva"
+            },
+            {
+              "tipo": "cura",
+              "pct": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fred",
+      "nombre": "Bitsy Fred",
+      "rol": "Tanque",
+      "sprite": "assets/bitsies/bitsy_fred.png",
+      "alto": 46.7,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 105,
+        "atq": 9,
+        "def": 12,
+        "vel": 8
+      },
+      "movimientos": [
+        {
+          "id": "embestida",
+          "nombre": "Embestida",
+          "desc": "Daño fuerte a un rival",
+          "objetivo": "rival",
+          "poder": 15
+        },
+        {
+          "id": "desenmascarar",
+          "nombre": "Desenmascarar",
+          "desc": "Daño y baja la DEF rival",
+          "objetivo": "rival",
+          "poder": 9,
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "def",
+              "cambio": -1
+            }
+          ]
+        },
+        {
+          "id": "plan_maestro",
+          "nombre": "Plan maestro",
+          "desc": "Sube la DEF de todo el equipo",
+          "objetivo": "aliados",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "def",
+              "cambio": 1
+            }
+          ]
+        }
       ]
     },
     {
@@ -63,13 +368,104 @@
       "nombre": "Bitsy Hello Kitty",
       "rol": "Sanadora",
       "sprite": "assets/bitsies/bitsy_hello_kitty.png",
+      "alto": 46.8,
       "desbloqueo": "mundo",
       "jugable": true,
-      "stats": { "pv": 90, "atq": 7, "def": 10, "vel": 10 },
+      "stats": {
+        "pv": 90,
+        "atq": 7,
+        "def": 10,
+        "vel": 10
+      },
       "movimientos": [
-        { "id": "mono", "nombre": "Moño", "desc": "Cura 25% a un aliado", "objetivo": "aliado", "efectos": [{ "tipo": "cura", "pct": 25 }] },
-        { "id": "abrazo", "nombre": "Abrazo grupal", "desc": "Cura 10% a todo el equipo", "objetivo": "aliados", "efectos": [{ "tipo": "cura", "pct": 10 }] },
-        { "id": "golpe_tierno", "nombre": "Golpe tierno", "desc": "Daño y baja el ATQ rival", "objetivo": "rival", "poder": 10, "efectos": [{ "tipo": "mod", "stat": "atq", "cambio": -1 }] }
+        {
+          "id": "mono",
+          "nombre": "Moño",
+          "desc": "Cura 25% a un aliado",
+          "objetivo": "aliado",
+          "efectos": [
+            {
+              "tipo": "cura",
+              "pct": 25
+            }
+          ]
+        },
+        {
+          "id": "abrazo",
+          "nombre": "Abrazo grupal",
+          "desc": "Cura 10% a todo el equipo",
+          "objetivo": "aliados",
+          "efectos": [
+            {
+              "tipo": "cura",
+              "pct": 10
+            }
+          ]
+        },
+        {
+          "id": "golpe_tierno",
+          "nombre": "Golpe tierno",
+          "desc": "Daño y baja el ATQ rival",
+          "objetivo": "rival",
+          "poder": 10,
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "keroppi",
+      "nombre": "Bitsy Keroppi",
+      "rol": "Sanador",
+      "sprite": "assets/bitsies/bitsy_keroppi.png",
+      "alto": 51.2,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 85,
+        "atq": 8,
+        "def": 10,
+        "vel": 11
+      },
+      "movimientos": [
+        {
+          "id": "salpicon",
+          "nombre": "Salpicón",
+          "desc": "Daño bajo a todos los rivales",
+          "objetivo": "rivales",
+          "poder": 7
+        },
+        {
+          "id": "charco",
+          "nombre": "Charco",
+          "desc": "Cura 20% a un aliado",
+          "objetivo": "aliado",
+          "efectos": [
+            {
+              "tipo": "cura",
+              "pct": 20
+            }
+          ]
+        },
+        {
+          "id": "croar",
+          "nombre": "Croar",
+          "desc": "Daño leve y baja la VEL rival",
+          "objetivo": "rival",
+          "poder": 7,
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "vel",
+              "cambio": -1
+            }
+          ]
+        }
       ]
     },
     {
@@ -77,13 +473,103 @@
       "nombre": "Bitsy Lisa Simpson",
       "rol": "Estratega",
       "sprite": "assets/bitsies/bitsy_lisa_simpson.png",
+      "alto": 47.8,
       "desbloqueo": "mundo",
       "jugable": true,
-      "stats": { "pv": 75, "atq": 10, "def": 8, "vel": 12 },
+      "stats": {
+        "pv": 75,
+        "atq": 10,
+        "def": 8,
+        "vel": 12
+      },
       "movimientos": [
-        { "id": "saxofon", "nombre": "Saxofón", "desc": "Daño bajo a todos los rivales", "objetivo": "rivales", "poder": 8 },
-        { "id": "dato_correcto", "nombre": "Dato correcto", "desc": "Daño y baja la DEF rival", "objetivo": "rival", "poder": 9, "efectos": [{ "tipo": "mod", "stat": "def", "cambio": -1 }] },
-        { "id": "plan", "nombre": "Plan", "desc": "Sube la VEL de todo el equipo", "objetivo": "aliados", "efectos": [{ "tipo": "mod", "stat": "vel", "cambio": 1 }] }
+        {
+          "id": "saxofon",
+          "nombre": "Saxofón",
+          "desc": "Daño bajo a todos los rivales",
+          "objetivo": "rivales",
+          "poder": 8
+        },
+        {
+          "id": "dato_correcto",
+          "nombre": "Dato correcto",
+          "desc": "Daño y baja la DEF rival",
+          "objetivo": "rival",
+          "poder": 9,
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "def",
+              "cambio": -1
+            }
+          ]
+        },
+        {
+          "id": "plan",
+          "nombre": "Plan",
+          "desc": "Sube la VEL de todo el equipo",
+          "objetivo": "aliados",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "vel",
+              "cambio": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bart",
+      "nombre": "Bitsy Bart",
+      "rol": "Travieso",
+      "sprite": "assets/bitsies/bitsy_bart.png",
+      "alto": 51.6,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 80,
+        "atq": 12,
+        "def": 8,
+        "vel": 13
+      },
+      "movimientos": [
+        {
+          "id": "gomera",
+          "nombre": "Gomera",
+          "desc": "Daño a un rival",
+          "objetivo": "rival",
+          "poder": 14
+        },
+        {
+          "id": "patineta",
+          "nombre": "Patineta",
+          "desc": "Esquiva y sube su VEL",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "esquiva"
+            },
+            {
+              "tipo": "mod",
+              "stat": "vel",
+              "cambio": 1
+            }
+          ]
+        },
+        {
+          "id": "travesura",
+          "nombre": "Travesura",
+          "desc": "Baja el ATQ de todos los rivales",
+          "objetivo": "rivales",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": -1
+            }
+          ]
+        }
       ]
     },
     {
@@ -91,13 +577,291 @@
       "nombre": "Bitsy Puca",
       "rol": "Asalto",
       "sprite": "assets/bitsies/bitsy_puca.png",
+      "alto": 47.8,
       "desbloqueo": "mundo",
       "jugable": true,
-      "stats": { "pv": 85, "atq": 13, "def": 8, "vel": 12 },
+      "stats": {
+        "pv": 85,
+        "atq": 13,
+        "def": 8,
+        "vel": 12
+      },
       "movimientos": [
-        { "id": "persecucion", "nombre": "Persecución", "desc": "Golpea 2 veces", "objetivo": "rival", "poder": 9, "golpes": 2 },
-        { "id": "fideos", "nombre": "Fideos", "desc": "Se cura 15%", "objetivo": "propio", "efectos": [{ "tipo": "cura", "pct": 15 }] },
-        { "id": "beso_sorpresa", "nombre": "Beso sorpresa", "desc": "Daño leve y aturde 1 turno", "objetivo": "rival", "poder": 6, "efectos": [{ "tipo": "aturdir", "turnos": 1 }] }
+        {
+          "id": "persecucion",
+          "nombre": "Persecución",
+          "desc": "Golpea 2 veces",
+          "objetivo": "rival",
+          "poder": 9,
+          "golpes": 2
+        },
+        {
+          "id": "fideos",
+          "nombre": "Fideos",
+          "desc": "Se cura 15%",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "cura",
+              "pct": 15
+            }
+          ]
+        },
+        {
+          "id": "beso_sorpresa",
+          "nombre": "Beso sorpresa",
+          "desc": "Daño leve y aturde 1 turno",
+          "objetivo": "rival",
+          "poder": 6,
+          "efectos": [
+            {
+              "tipo": "aturdir",
+              "turnos": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "garu",
+      "nombre": "Bitsy Garu",
+      "rol": "Ninja",
+      "sprite": "assets/bitsies/bitsy_garu.png",
+      "alto": 52.6,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 85,
+        "atq": 14,
+        "def": 8,
+        "vel": 13
+      },
+      "movimientos": [
+        {
+          "id": "katana",
+          "nombre": "Katana",
+          "desc": "Daño fuerte a un rival",
+          "objetivo": "rival",
+          "poder": 16
+        },
+        {
+          "id": "shuriken",
+          "nombre": "Shuriken",
+          "desc": "Golpea a 2 rivales",
+          "objetivo": "dos_rivales",
+          "poder": 9
+        },
+        {
+          "id": "meditacion",
+          "nombre": "Meditación",
+          "desc": "Sube su ATQ y se cura 10%",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": 1
+            },
+            {
+              "tipo": "cura",
+              "pct": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "goku",
+      "nombre": "Bitsy Goku",
+      "rol": "Atacante",
+      "sprite": "assets/bitsies/bitsy_goku.png",
+      "alto": 56.7,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 95,
+        "atq": 14,
+        "def": 9,
+        "vel": 12
+      },
+      "movimientos": [
+        {
+          "id": "kamehameha",
+          "nombre": "Kamehameha",
+          "desc": "Daño muy fuerte a un rival",
+          "objetivo": "rival",
+          "poder": 18
+        },
+        {
+          "id": "puno_rapido",
+          "nombre": "Puño rápido",
+          "desc": "Golpea 2 veces",
+          "objetivo": "rival",
+          "poder": 8,
+          "golpes": 2
+        },
+        {
+          "id": "concentrar_ki",
+          "nombre": "Concentrar ki",
+          "desc": "Sube su ATQ",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vegeta",
+      "nombre": "Bitsy Vegeta",
+      "rol": "Rival orgulloso",
+      "sprite": "assets/bitsies/bitsy_vegeta.png",
+      "alto": 55.4,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 90,
+        "atq": 14,
+        "def": 9,
+        "vel": 11
+      },
+      "movimientos": [
+        {
+          "id": "galick_ho",
+          "nombre": "Galick Ho",
+          "desc": "Daño fuerte a un rival",
+          "objetivo": "rival",
+          "poder": 18
+        },
+        {
+          "id": "big_bang",
+          "nombre": "Big Bang",
+          "desc": "Daño a todos los rivales",
+          "objetivo": "rivales",
+          "poder": 9
+        },
+        {
+          "id": "orgullo",
+          "nombre": "Orgullo saiyajin",
+          "desc": "Sube mucho su ATQ pero baja su DEF",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": 2
+            },
+            {
+              "tipo": "mod",
+              "stat": "def",
+              "cambio": -1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "harry",
+      "nombre": "Bitsy Harry Potter",
+      "rol": "Mago",
+      "sprite": "assets/bitsies/bitsy_harry.png",
+      "alto": 49.7,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 80,
+        "atq": 12,
+        "def": 9,
+        "vel": 11
+      },
+      "movimientos": [
+        {
+          "id": "expelliarmus",
+          "nombre": "Expelliarmus",
+          "desc": "Daño y baja el ATQ rival",
+          "objetivo": "rival",
+          "poder": 9,
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "atq",
+              "cambio": -1
+            }
+          ]
+        },
+        {
+          "id": "desmaius",
+          "nombre": "Desmaius",
+          "desc": "Daño leve y aturde 1 turno",
+          "objetivo": "rival",
+          "poder": 6,
+          "efectos": [
+            {
+              "tipo": "aturdir",
+              "turnos": 1
+            }
+          ]
+        },
+        {
+          "id": "patronus",
+          "nombre": "Expecto Patronum",
+          "desc": "Cura 12% a todo el equipo",
+          "objetivo": "aliados",
+          "efectos": [
+            {
+              "tipo": "cura",
+              "pct": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ron",
+      "nombre": "Bitsy Ron Weasley",
+      "rol": "Leal",
+      "sprite": "assets/bitsies/bitsy_ron.png",
+      "alto": 49.5,
+      "desbloqueo": "mundo",
+      "jugable": true,
+      "stats": {
+        "pv": 95,
+        "atq": 10,
+        "def": 10,
+        "vel": 9
+      },
+      "movimientos": [
+        {
+          "id": "varita_rota",
+          "nombre": "Varita rota",
+          "desc": "Daño a un rival",
+          "objetivo": "rival",
+          "poder": 14
+        },
+        {
+          "id": "ajedrez",
+          "nombre": "Ajedrez mágico",
+          "desc": "Sube la DEF de todo el equipo",
+          "objetivo": "aliados",
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "def",
+              "cambio": 1
+            }
+          ]
+        },
+        {
+          "id": "weasley",
+          "nombre": "Ataque Weasley",
+          "desc": "Golpea a 2 rivales",
+          "objetivo": "dos_rivales",
+          "poder": 10
+        }
       ]
     },
     {
@@ -105,13 +869,49 @@
       "nombre": "Bitsy Virus",
       "rol": "Jefe · daño en área",
       "sprite": "assets/bitsies/bitsy_virus.png",
+      "alto": 53.0,
       "desbloqueo": "jefe",
       "jugable": true,
-      "stats": { "pv": 140, "atq": 13, "def": 10, "vel": 8 },
+      "stats": {
+        "pv": 140,
+        "atq": 13,
+        "def": 10,
+        "vel": 8
+      },
       "movimientos": [
-        { "id": "corromper", "nombre": "Corromper", "desc": "Daño a todos los rivales", "objetivo": "rivales", "poder": 9 },
-        { "id": "infectar", "nombre": "Infectar", "desc": "Daño y veneno por 3 turnos", "objetivo": "rival", "poder": 8, "efectos": [{ "tipo": "veneno", "turnos": 3 }] },
-        { "id": "pantallazo", "nombre": "Pantallazo azul", "desc": "Daño y aturde 1 turno", "objetivo": "rival", "poder": 8, "efectos": [{ "tipo": "aturdir", "turnos": 1 }] }
+        {
+          "id": "corromper",
+          "nombre": "Corromper",
+          "desc": "Daño a todos los rivales",
+          "objetivo": "rivales",
+          "poder": 9
+        },
+        {
+          "id": "infectar",
+          "nombre": "Infectar",
+          "desc": "Daño y veneno por 3 turnos",
+          "objetivo": "rival",
+          "poder": 8,
+          "efectos": [
+            {
+              "tipo": "veneno",
+              "turnos": 3
+            }
+          ]
+        },
+        {
+          "id": "pantallazo",
+          "nombre": "Pantallazo azul",
+          "desc": "Daño y aturde 1 turno",
+          "objetivo": "rival",
+          "poder": 8,
+          "efectos": [
+            {
+              "tipo": "aturdir",
+              "turnos": 1
+            }
+          ]
+        }
       ]
     },
     {
@@ -119,27 +919,49 @@
       "nombre": "Fragmento corrupto",
       "rol": "Secuaz del Virus",
       "sprite": "assets/bitsies/bitsy_base.png",
+      "alto": 45.0,
       "desbloqueo": "nunca",
       "jugable": false,
-      "stats": { "pv": 60, "atq": 8, "def": 7, "vel": 8 },
+      "stats": {
+        "pv": 60,
+        "atq": 8,
+        "def": 7,
+        "vel": 8
+      },
       "movimientos": [
-        { "id": "mordisco", "nombre": "Mordisco de bits", "desc": "Daño a un rival", "objetivo": "rival", "poder": 12 },
-        { "id": "ruido", "nombre": "Ruido", "desc": "Daño leve y baja la DEF", "objetivo": "rival", "poder": 6, "efectos": [{ "tipo": "mod", "stat": "def", "cambio": -1 }] },
-        { "id": "parche", "nombre": "Parche", "desc": "Se cura 15%", "objetivo": "propio", "efectos": [{ "tipo": "cura", "pct": 15 }] }
-      ]
-    },
-    {
-      "id": "archivo",
-      "nombre": "Archivo corrupto",
-      "rol": "Guardián sin disfraz",
-      "sprite": "assets/bitsies/bitsy_base.png",
-      "desbloqueo": "nunca",
-      "jugable": false,
-      "stats": { "pv": 110, "atq": 11, "def": 10, "vel": 9 },
-      "movimientos": [
-        { "id": "sobrescribir", "nombre": "Sobrescribir", "desc": "Daño fuerte a un rival", "objetivo": "rival", "poder": 16 },
-        { "id": "interferencia", "nombre": "Interferencia", "desc": "Daño bajo a todos", "objetivo": "rivales", "poder": 7 },
-        { "id": "autoreparar", "nombre": "Autoreparar", "desc": "Se cura 15%", "objetivo": "propio", "efectos": [{ "tipo": "cura", "pct": 15 }] }
+        {
+          "id": "mordisco",
+          "nombre": "Mordisco de bits",
+          "desc": "Daño a un rival",
+          "objetivo": "rival",
+          "poder": 12
+        },
+        {
+          "id": "ruido",
+          "nombre": "Ruido",
+          "desc": "Daño leve y baja la DEF",
+          "objetivo": "rival",
+          "poder": 6,
+          "efectos": [
+            {
+              "tipo": "mod",
+              "stat": "def",
+              "cambio": -1
+            }
+          ]
+        },
+        {
+          "id": "parche",
+          "nombre": "Parche",
+          "desc": "Se cura 15%",
+          "objetivo": "propio",
+          "efectos": [
+            {
+              "tipo": "cura",
+              "pct": 15
+            }
+          ]
+        }
       ]
     }
   ]
