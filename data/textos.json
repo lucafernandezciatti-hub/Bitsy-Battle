@@ -2,9 +2,9 @@
   "titulo": "Bitsy Battle",
   "subtitulo": "Una app de Pixelados",
   "inicio_bitsy": [
-    "Hola. Soy Bitsy. Luca y Donna siguen adentro de la máquina.",
-    "Cada página que resolvés en la revista me da un disfraz nuevo.",
-    "El Virus está corrompiendo los mundos. Necesito un equipo de cuatro.",
+    "Hola. Soy Bitsy, el modelo de IA que diseñaron Luca y Donna.",
+    "Cada página que resolvés en la revista desbloquea una versión nueva de Bitsy.",
+    "La Bitsy corrupta está llenando los mundos de copias. Necesito un equipo de cuatro.",
     "Si encontrás a Luca y Donna, mirá bien: al lado hay cuatro símbolos."
   ],
   "pistas_error": [
@@ -24,9 +24,10 @@
   "creditos": "Pixelados · IA Generativa y Diseño · UTDT · Grupo 03: Donna Liporace, Luca Fernández Ciatti, Lucía Medina",
   "salida_mensajes": [
     "Lo lograste. La señal está completa.",
-    "Luca y Donna ya salieron de la máquina. Los vi pasar por el monitor... dejaron el café, eso sí.",
+    "La Bitsy corrupta se apagó, y con ella todas sus copias. La computadora está limpia.",
+    "El parcial de Luca y Donna está a salvo... y yo también. ¡No voy a desaparecer!",
     "El Virus quedó encerrado en tu colección. Ahora pelea de nuestro lado.",
-    "Yo me quedo acá adentro. Alguien tiene que cuidar los mundos.",
+    "Ah, y Luca y Donna no van a reprobar. Bueno... eso espero.",
     "Gracias por buscarlos, página por página."
   ],
   "ayuda_dialogo": "X: VER TODO · TOCÁ O ENTER: SEGUIR",
@@ -36,24 +37,28 @@
       "texto": "¡Hola! ¡Por fin alguien prende la compu! Soy Bitsy."
     },
     {
-      "escena": "cafe",
-      "texto": "Te cuento rápido: Luca y Donna estaban terminando el parcial y se les volcó el café encima del teclado."
+      "escena": "bitsy",
+      "texto": "Te pongo al día: el parcial de Luca y Donna era diseñar un modelo de IA Generativa. ¿Y adiviná qué? Ese modelo soy yo."
     },
     {
       "escena": "cafe",
-      "texto": "¡ZZZT! El cortocircuito los chupó adentro de la computadora. Ahora están perdidos entre las páginas de Pixelados."
+      "texto": "Una noche, mientras me terminaban, se les volcó el café encima del teclado."
+    },
+    {
+      "escena": "cafe",
+      "texto": "¡ZZZT! El cortocircuito los chupó adentro de la computadora. Por suerte lograron salir... pero el desastre quedó acá adentro."
     },
     {
       "escena": "virus",
-      "texto": "Pero eso no es todo... El café también dejó suelta a una versión corrupta de mí."
+      "texto": "El café dejó suelta a una versión corrupta de mí."
     },
     {
       "escena": "copias",
-      "texto": "Anda dando vueltas por la máquina y está fabricando copias de Bitsy corruptas. Cada vez hay más."
+      "texto": "Anda dando vueltas por la máquina y está fabricando copias corruptas de Bitsy, ¡hasta de mis versiones disfrazadas! Cada vez hay más."
     },
     {
       "escena": "desaparece",
-      "texto": "Si no la frenamos, el trabajo de Luca y Donna va a quedar destruido... y yo voy a desaparecer."
+      "texto": "Si no la frenamos, el parcial de Luca y Donna va a quedar destruido... y yo voy a desaparecer."
     },
     {
       "escena": "alarma",
@@ -61,11 +66,11 @@
     },
     {
       "escena": "bitsy",
-      "texto": "Necesito tu ayuda. Buscá a Luca y Donna en cada página de la revista: al lado tienen cuatro símbolos. Con cada código me pongo un disfraz nuevo y armamos un equipo para pelear."
+      "texto": "Necesito tu ayuda. Buscá a Luca y Donna en cada página de la revista: al lado tienen cuatro símbolos. Con cada código desbloqueamos versiones nuevas de Bitsy para armar el equipo."
     },
     {
       "escena": "bitsy",
-      "texto": "¿Estás listo? ¡Vamos a sacarlos de acá!"
+      "texto": "¿Estás listo? ¡Vamos a echar al virus de la computadora!"
     }
   ],
   "intro_alerta": "ALERTA DEL SISTEMA"

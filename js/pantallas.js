@@ -77,11 +77,15 @@ BB.mostrarIntro = function () {
   escena.dataset.escena = 'bitsy';
   $('intro-titulo').textContent = T.intro_alerta;
   $('intro-virus').src = BB.sprites.virus.src;
-  // las copias corruptas usan la versión "infectada" (verde/glitch) del fragmento
-  const fr = BB.sprites.fragmento;
-  let srcCopia = fr.src;
-  try { if (fr.infectado && fr.infectado.toDataURL) srcCopia = fr.infectado.toDataURL(); } catch (e) { /* usa el original */ }
-  ['intro-copia1', 'intro-copia2', 'intro-copia3'].forEach((id) => { $(id).src = srcCopia; });
+  // las copias corruptas: el fragmento y algunas versiones disfrazadas, todas en su versión "infectada"
+  const COPIAS = { 'intro-copia1': 'mario', 'intro-copia2': 'fragmento', 'intro-copia3': 'batman', 'intro-copia4': 'hello_kitty' };
+  Object.entries(COPIAS).forEach(([el, id]) => {
+    const sp = BB.sprites[id] || BB.sprites.fragmento;
+    let src = sp.src;
+    try { if (sp.infectado && sp.infectado.toDataURL) src = sp.infectado.toDataURL(); } catch (e) { /* usa el original */ }
+    $(el).src = src;
+    $(el).style.setProperty('--k', (sp.alto / 45).toFixed(2)); // mismo tamaño de cuerpo para todos
+  });
   $('intro-caja').hidden = true;
   $('intro-saltar').hidden = true;
   $('intro-listo').hidden = true;
@@ -315,7 +319,7 @@ function verificarCodigo() {
     // se muestran de a uno: al cerrar la primera ficha aparece la segunda
     const mostrar = (i) => BB.mostrarFicha(nuevos[i], {
       revelar: true,
-      aviso: nuevos.length > 1 ? `¡NUEVO DISFRAZ! ${i + 1}/${nuevos.length}` : '¡NUEVO DISFRAZ!',
+      aviso: nuevos.length > 1 ? `¡NUEVA VERSIÓN! ${i + 1}/${nuevos.length}` : '¡NUEVA VERSIÓN!',
       alCerrar: i + 1 < nuevos.length ? () => mostrar(i + 1) : null
     });
     setTimeout(() => mostrar(0), 500);
