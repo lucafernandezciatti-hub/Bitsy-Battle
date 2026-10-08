@@ -81,13 +81,58 @@ BB.audio = (function () {
       bajo: [65.41, 65.41, 55, 55, 87.31, 87.31, 98, 98],
       acordes: [[523, 659, 784], [523, 659, 784], [440, 523, 659], [440, 523, 659], [349, 440, 523], [349, 440, 523], [392, 494, 587], [392, 494, 784]],
       tono: 'triangle', bombo: false
+    },
+    // jefe (batalla final contra el Virus): Mi frigio, rápido y oscuro.
+    // Bajo de sierra que late en corcheas, arpegio disminuido, latido de bombo grave y una alarma cada 4 compases.
+    jefe: {
+      semi: 0.115, vol: 0.24,
+      bajo: [82.41, 82.41, 87.31, 82.41, 65.41, 73.42, 77.78, 77.78],
+      acordes: [[329.6, 392, 493.9], [329.6, 392, 466.2], [349.2, 440, 523.3], [329.6, 392, 493.9],
+                [261.6, 329.6, 415.3], [293.7, 349.2, 440], [311.1, 370, 440], [311.1, 370, 523.3]],
+      tono: 'sawtooth', especial: true
     }
   };
   let temaActual = null, esperaMenu = null;
 
+  // grave que cae de tono: suena como un latido
+  function latido(t, vol) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(38, t + 0.16);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    o.connect(g); g.connect(musicaGain); o.start(t); o.stop(t + 0.22);
+  }
+
+  function programarJefe(T) {
+    while (proxima < ctx.currentTime + 0.25) {
+      const compas = Math.floor(paso / 8) % 8;
+      const vuelta = Math.floor(paso / 64);   // cada vuelta completa el arpegio sube una octava (más tensión)
+      const p = paso % 8;
+      const raiz = T.bajo[compas];
+      // bajo: corcheas que alternan raíz y octava
+      nota(p % 2 ? raiz * 2 : raiz, proxima, T.semi * 0.9, 'sawtooth', 0.32, musicaGain);
+      // arpegio que sube y baja
+      const orden = [0, 1, 2, 1, 0, 2, 1, 2];
+      const oct = vuelta % 2 ? 2 : 1;
+      nota(T.acordes[compas][orden[p]] * oct, proxima, T.semi * 0.7, 'square', 0.09, musicaGain);
+      // latido: dos golpes seguidos al empezar el compás y uno en la mitad
+      if (p === 0 || p === 1 || p === 4) latido(proxima, p === 1 ? 0.35 : 0.55);
+      if (p % 2 === 1) ruido(proxima, 0.02, 0.03);
+      // alarma: un trítono agudo al principio de cada 4 compases
+      if (p === 0 && compas % 4 === 0) {
+        nota(987.8, proxima, T.semi * 3, 'square', 0.07, musicaGain);
+        nota(698.5, proxima, T.semi * 3, 'square', 0.07, musicaGain);
+      }
+      // el último compás termina con una escala cromática que baja
+      if (compas === 7 && p >= 4) nota([659.3, 622.3, 587.3, 554.4][p - 4], proxima, T.semi * 0.9, 'sawtooth', 0.08, musicaGain);
+      proxima += T.semi; paso++;
+    }
+  }
+
   function programar() {
     const T = TEMAS[temaActual];
     if (!T) return;
+    if (T.especial) return programarJefe(T);
     while (proxima < ctx.currentTime + 0.25) {
       const compas = Math.floor(paso / 8) % 8;
       const p = paso % 8;
@@ -99,7 +144,7 @@ BB.audio = (function () {
     }
   }
 
-  // tipo: 'menu' | 'batalla' | null (silencio). demora en ms (para no pisar la fanfarria de victoria)
+  // tipo: 'menu' | 'batalla' | 'jefe' | null (silencio). demora en ms (para no pisar la fanfarria de victoria)
   function musica(tipo, demora = 0) {
     clearTimeout(esperaMenu);
     if (demora) { esperaMenu = setTimeout(() => musica(tipo), demora); return; }

@@ -91,7 +91,7 @@ BB.Batalla = class {
 
   // ---------------- bucle principal ----------------
   async jugar() {
-    if (this.conPantalla) { this.dibujando = true; this.cuadro(); BB.audio.musica('batalla'); }
+    if (this.conPantalla) { this.dibujando = true; this.cuadro(); BB.audio.musica(this.todos.some((u) => u.jefe) ? 'jefe' : 'batalla'); }
     while (!this.fin) {
       if (this.cola.length === 0) this.nuevaRonda();
       const u = this.cola.shift();
