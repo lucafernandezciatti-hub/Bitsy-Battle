@@ -594,3 +594,10 @@ h2 { font-family: var(--fuente-titulo); font-size: 12px; margin: 0; letter-spaci
   .intro-copia.c4 { height: calc(min(76px, 9.5vh) * var(--k, 1)); }
   .intro-cafe { font-size: min(80px, 10vh); }
 }
+
+/* v0.9: intro — botones centrados y cambio de versión de Bitsy */
+#v-intro .fila-btns { display: flex; justify-content: center; gap: 8px; width: 100%; }
+#v-intro .fila-btns .btn { min-width: 180px; }
+#v-intro .fila-btns .btn[hidden] { display: none; }
+.intro-bitsy.cambia { animation: cambia-version .45s steps(4); }
+@keyframes cambia-version { 0% { transform: scale(.6) translateY(10px); filter: brightness(3); } 50% { transform: scale(1.12) translateY(-6px); } 100% { transform: none; } }

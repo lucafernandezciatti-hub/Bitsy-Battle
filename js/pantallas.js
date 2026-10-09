@@ -93,7 +93,28 @@ BB.mostrarIntro = function () {
   $('intro-ayuda').textContent = '';
   $('intro-empezar').hidden = false;
 
+  // escena "disfraces": la Bitsy de la intro va cambiando de versión con un mini salto
+  const imgBitsy = escena.querySelector('.intro-bitsy');
+  const VERSIONES = ['mario', 'batman', 'hello_kitty', 'goku', 'harry', 'puca', 'lisa_simpson', 'dafne'];
+  let timerDisfraz = null;
+  function disfraces(activo) {
+    clearInterval(timerDisfraz); timerDisfraz = null;
+    if (!activo) { imgBitsy.src = BB.sprites.base.src; imgBitsy.classList.remove('cambia'); return; }
+    let k = 0;
+    const cambiar = () => {
+      const sp = BB.sprites[VERSIONES[k % VERSIONES.length]] || BB.sprites.base;
+      imgBitsy.classList.remove('cambia'); void imgBitsy.offsetWidth; imgBitsy.classList.add('cambia');
+      imgBitsy.src = sp.src;
+      if (BB.audioListo) BB.audio.sonar('tecla');
+      k++;
+    };
+    cambiar();
+    timerDisfraz = setInterval(cambiar, 900);
+  }
+  disfraces(false);
+
   const terminar = () => {
+    disfraces(false);
     BB.dialogo.cancelar();
     BB.progreso.introVista = true;
     BB.guardar();
@@ -113,12 +134,14 @@ BB.mostrarIntro = function () {
     BB.dialogo.hablar($('intro-txt'), msjs.map((m) => m.texto), {
       alMensaje: (i) => {
         const e = msjs[i].escena;
+        disfraces(e === 'disfraces');
         if (escena.dataset.escena !== e && (e === 'virus' || e === 'alarma')) BB.audio.sonar(e === 'virus' ? 'estado' : 'error');
         if (e === 'copias') BB.audio.sonar('baja');
         escena.dataset.escena = e;
         $('v-intro').classList.toggle('alarma', e === 'alarma');
       },
       alTerminar: () => {
+        disfraces(false);
         $('intro-ayuda').textContent = '';
         $('intro-saltar').hidden = true;
         $('intro-listo').hidden = false;

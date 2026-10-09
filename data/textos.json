@@ -5,11 +5,11 @@
     "Hola. Soy Bitsy, el modelo de IA que diseñaron Luca y Donna.",
     "Cada página que resolvés en la revista desbloquea una versión nueva de Bitsy.",
     "La Bitsy corrupta está llenando los mundos de copias. Necesito un equipo de cuatro.",
-    "En cada página de la revista, junto a mis mensajes, hay tres símbolos. ¡Cargalos acá!",
+    "En cada mundo de la revista dejé dos códigos de tres símbolos. ¡Cargalos acá!",
     "¿Todavía no tenés la revista Pixelados? ¡Conseguila! Ahí están escondidos todos los códigos."
   ],
   "pistas_error": [
-    "Ese código no existe. Los tres símbolos están junto a mi texto, en cada página de la revista.",
+    "Ese código no existe. En cada página de la revista dejé dos códigos, junto a mi texto.",
     "Error de lectura. ¿Copiaste los símbolos de izquierda a derecha?",
     "Mmm, no. Volvé a la página y buscá dónde hablo yo: los símbolos están ahí, esperándote.",
     "Señal inválida. Fijate bien la forma de cada símbolo, que algunos se parecen mucho.",
@@ -43,6 +43,10 @@
       "texto": "Te pongo al día: el parcial de Luca y Donna era diseñar un modelo de IA Generativa. ¿Y adiviná qué? Ese modelo soy yo."
     },
     {
+      "escena": "disfraces",
+      "texto": "Me diseñaron para recrear en pixel art a cualquier personaje conocido. Mirá: ¡Mario, Batman, Hello Kitty, Goku...! Puedo ser quien quieras."
+    },
+    {
       "escena": "cafe",
       "texto": "Una noche, mientras me terminaban, se les volcó el café encima del teclado."
     },
@@ -68,7 +72,7 @@
     },
     {
       "escena": "bitsy",
-      "texto": "Necesito tu ayuda. Los códigos para despertar a mis otras versiones están en la revista Pixelados: cada página tiene dos, de tres símbolos, junto a mis mensajes."
+      "texto": "Necesito tu ayuda. En cada mundo de la revista Pixelados dejé escondidos dos códigos de tres símbolos, junto a mis mensajes. Cada código despierta una de mis versiones."
     },
     {
       "escena": "bitsy",
@@ -86,7 +90,7 @@
   "intro_alerta": "ALERTA DEL SISTEMA",
   "mundo_bloqueado": "Este mundo todavía está bloqueado. Ganá el mundo anterior para abrirlo.",
   "ingresar_bitsy": [
-    "Los códigos están en la revista Pixelados: cada página tiene dos, junto a mis mensajes.",
+    "En cada mundo de la revista Pixelados dejé dos códigos de tres símbolos, junto a mis mensajes.",
     "¿No tenés la revista? ¡Andá a buscarla! Sin ella no puedo despertar a mis otras versiones."
   ]
 }

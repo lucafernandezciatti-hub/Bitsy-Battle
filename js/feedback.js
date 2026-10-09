@@ -2,7 +2,7 @@
 // Botón ✎ → se saca una captura del juego → escribís la observación → Enter la guarda.
 // Las notas quedan en el navegador (IndexedDB) hasta que las descargás como un archivo .json.
 window.BB = window.BB || {};
-BB.VERSION = '0.8';
+BB.VERSION = '0.9';
 
 BB.feedback = (function () {
   const $ = (id) => document.getElementById(id);
