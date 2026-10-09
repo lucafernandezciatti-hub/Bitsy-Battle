@@ -5,21 +5,23 @@
     "Hola. Soy Bitsy, el modelo de IA que diseñaron Luca y Donna.",
     "Cada página que resolvés en la revista desbloquea una versión nueva de Bitsy.",
     "La Bitsy corrupta está llenando los mundos de copias. Necesito un equipo de cuatro.",
-    "Si encontrás a Luca y Donna, mirá bien: al lado hay cuatro símbolos."
+    "En cada página de la revista, junto a mis mensajes, hay tres símbolos. ¡Cargalos acá!",
+    "¿Todavía no tenés la revista Pixelados? ¡Conseguila! Ahí están escondidos todos los códigos."
   ],
   "pistas_error": [
-    "Ese código no existe. Buscá los cuatro símbolos pegados a Luca y Donna, no en el margen.",
+    "Ese código no existe. Los tres símbolos están junto a mi texto, en cada página de la revista.",
     "Error de lectura. ¿Copiaste los símbolos de izquierda a derecha?",
-    "Mmm, no. Probá mirar la escena de nuevo: Luca tiene camisa blanca, es lo primero que salta.",
-    "Señal inválida. Donna lleva capucha negra con cordones plateados: buscá eso."
+    "Mmm, no. Volvé a la página y buscá dónde hablo yo: los símbolos están ahí, esperándote.",
+    "Señal inválida. Fijate bien la forma de cada símbolo, que algunos se parecen mucho.",
+    "¡Casi! Pero no. Cada página tiene su propio código: ¿no estarás mezclando dos mundos?"
   ],
   "error_codigo": "ERROR 0x0{n}: SEÑAL INVÁLIDA",
-  "codigo_repetido": "ESA SEÑAL YA FUE RECUPERADA",
+  "codigo_repetido": "ESE CÓDIGO YA FUE CARGADO",
   "maestro": "MODO DEMO: TODO DESBLOQUEADO, INCLUIDA LA BATALLA FINAL",
   "victoria": "VICTORIA",
   "derrota": "SEÑAL PERDIDA",
   "derrota_bitsy": "Nos desconectaron. Probá otro equipo o cambiá el orden de los ataques.",
-  "final_bloqueado": "Recuperá los 8 segmentos de señal para abrir el núcleo del Virus.",
+  "final_bloqueado": "Ganá los 8 mundos para abrir el núcleo de la Bitsy corrupta.",
   "salida_titulo": "SALIDA DESBLOQUEADA",
   "creditos": "Pixelados · IA Generativa y Diseño · UTDT · Grupo 03: Donna Liporace, Luca Fernández Ciatti, Lucía Medina",
   "salida_mensajes": [
@@ -66,12 +68,25 @@
     },
     {
       "escena": "bitsy",
-      "texto": "Necesito tu ayuda. Buscá a Luca y Donna en cada página de la revista: al lado tienen cuatro símbolos. Con cada código desbloqueamos versiones nuevas de Bitsy para armar el equipo."
+      "texto": "Necesito tu ayuda. Los códigos para despertar a mis otras versiones están en la revista Pixelados: cada página tiene dos, de tres símbolos, junto a mis mensajes."
+    },
+    {
+      "escena": "bitsy",
+      "texto": "¿No tenés la revista? ¡Andá a buscarla! Sin ella vamos a tener que pelear solo con mi versión básica... y no te lo recomiendo."
+    },
+    {
+      "escena": "bitsy",
+      "texto": "Con cada versión nueva armamos un equipo más fuerte y recorremos los mundos, uno por uno."
     },
     {
       "escena": "bitsy",
       "texto": "¿Estás listo? ¡Vamos a echar al virus de la computadora!"
     }
   ],
-  "intro_alerta": "ALERTA DEL SISTEMA"
+  "intro_alerta": "ALERTA DEL SISTEMA",
+  "mundo_bloqueado": "Este mundo todavía está bloqueado. Ganá el mundo anterior para abrirlo.",
+  "ingresar_bitsy": [
+    "Los códigos están en la revista Pixelados: cada página tiene dos, junto a mis mensajes.",
+    "¿No tenés la revista? ¡Andá a buscarla! Sin ella no puedo despertar a mis otras versiones."
+  ]
 }

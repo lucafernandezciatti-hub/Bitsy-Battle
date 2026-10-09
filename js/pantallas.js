@@ -151,12 +151,21 @@ BB.carta = function (id, { bloqueada = false, badge = '' } = {}) {
 BB.combate = null; // { tipo: 'mundo' | 'final' | 'rapida', mundo, rival, fondo }
 let equipo = [];
 
+// Un mundo está abierto si es el primero, si ya se ganó el anterior, o en modo demo
+BB.mundoAbierto = function (i) {
+  if (i === 0 || BB.progreso.demo) return true;
+  return BB.progreso.ganados.includes(BB.datos.mundos[i - 1].id);
+};
+
+// cantidad de símbolos de cada código (los que van impresos en la revista)
+BB.LARGO_CODIGO = 3;
+
 BB.pantallas = {
   inicio() {
     BB.pintarSenal($('senal-barra'));
     $('senal-txt').textContent = `SEÑAL ${BB.senal()}/8`;
     const t = BB.datos.textos.inicio_bitsy;
-    BB.dialogo.hablar($('guia-txt'), BB.senal() === 0 && BB.progreso.encontrados.length === 0 ? [t[0], t[3]] : BB.al(t));
+    BB.dialogo.hablar($('guia-txt'), BB.senal() === 0 && BB.progreso.encontrados.length === 0 ? [t[0], t[3], t[4]] : BB.al(t));
   },
 
   ingresar() {
@@ -164,6 +173,7 @@ BB.pantallas = {
     pintarCasilleros();
     $('ingresar-msg').textContent = '\u00a0';
     $('ingresar-msg').className = 'mensaje';
+    BB.dialogo.hablar($('ingresar-pista'), BB.datos.textos.ingresar_bitsy);
   },
 
   coleccion() {
@@ -190,17 +200,18 @@ BB.pantallas = {
   mapa() {
     const m = $('mapa');
     m.innerHTML = '';
-    BB.datos.mundos.forEach((mu) => {
-      const enc = BB.progreso.encontrados.includes(mu.id);
+    // los mundos se juegan en orden: el primero está abierto y ganar uno abre el siguiente
+    BB.datos.mundos.forEach((mu, i) => {
+      const abierto = BB.mundoAbierto(i);
       const gan = BB.progreso.ganados.includes(mu.id);
       const b = document.createElement('button');
-      b.className = 'mundo' + (enc ? '' : ' bloqueado') + (gan ? ' ganado' : '');
-      if (enc) b.style.backgroundImage = `url(${mu.fondo})`;
+      b.className = 'mundo' + (abierto ? '' : ' bloqueado') + (gan ? ' ganado' : '');
+      if (abierto) b.style.backgroundImage = `url(${mu.fondo})`;
       b.innerHTML = `<span class="carpeta">C:\\MUNDO_0${mu.pagina}</span>
-        <span class="mnombre">${enc ? mu.nombre : 'CARPETA CORRUPTA'}</span>
-        <span class="estado">${gan ? '✔ SEÑAL OK' : enc ? '► PELEAR' : '✖ FALTA LA PÁGINA'}</span>`;
+        <span class="mnombre">${abierto ? mu.nombre : 'CARPETA BLOQUEADA'}</span>
+        <span class="estado">${gan ? '✔ SEÑAL OK' : abierto ? '► PELEAR' : '✖ GANÁ EL MUNDO ANTERIOR'}</span>`;
       b.onclick = () => {
-        if (!enc) { BB.audio.sonar('error'); b.classList.add('temblor'); setTimeout(() => b.classList.remove('temblor'), 600); return; }
+        if (!abierto) { BB.audio.sonar('error'); b.classList.add('temblor'); setTimeout(() => b.classList.remove('temblor'), 600); return; }
         BB.audio.sonar('elegir');
         BB.combate = { tipo: 'mundo', mundo: mu, rival: mu.equipo_rival, fondo: mu.fondo, titulo: mu.nombre };
         BB.ir('equipo');
@@ -238,14 +249,14 @@ BB.pantallas = {
 };
 
 // ---------------- Ingresar señal ----------------
-const SIMBOLOS = ['■', '▲', '●', '✦', '♥', '✖'];
+
 BB.codigo = [];
 let errores = 0;
 
 function pintarCasilleros() {
   const cs = $('casilleros').children;
   $('casilleros').classList.remove('ok');
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < BB.LARGO_CODIGO; i++) {
     cs[i].textContent = BB.codigo[i] || '';
     cs[i].className = i === BB.codigo.length ? 'cursor' : '';
   }
@@ -253,13 +264,13 @@ function pintarCasilleros() {
 
 BB.armarTeclado = function () {
   const t = $('teclado');
-  SIMBOLOS.forEach((s) => {
+  BB.datos.simbolos.forEach((s) => {
     const b = document.createElement('button');
     b.className = 'btn';
     b.textContent = s;
     b.setAttribute('aria-label', 'símbolo ' + s);
     b.onclick = () => {
-      if (BB.codigo.length >= 4) return;
+      if (BB.codigo.length >= BB.LARGO_CODIGO) return;
       BB.audio.sonar('tecla');
       BB.codigo.push(s);
       pintarCasilleros();
@@ -272,7 +283,7 @@ BB.armarTeclado = function () {
 
 function verificarCodigo() {
   const msg = $('ingresar-msg');
-  if (BB.codigo.length < 4) { BB.audio.sonar('error'); msg.className = 'mensaje error'; msg.textContent = 'FALTAN SÍMBOLOS'; return; }
+  if (BB.codigo.length < BB.LARGO_CODIGO) { BB.audio.sonar('error'); msg.className = 'mensaje error'; msg.textContent = 'FALTAN SÍMBOLOS'; return; }
   const cod = BB.codigo.join('');
   const T = BB.datos.textos;
 
@@ -290,7 +301,9 @@ function verificarCodigo() {
     return;
   }
 
-  const mundo = BB.datos.mundos.find((m) => m.codigo === cod);
+  // cada Bitsy tiene su propio código de 3 símbolos
+  let mundo = null, id = null;
+  BB.datos.mundos.forEach((m) => Object.entries(m.codigos || {}).forEach(([b, c]) => { if (c === cod) { mundo = m; id = b; } }));
   if (!mundo) {
     errores++;
     BB.audio.sonar('error');
@@ -302,29 +315,20 @@ function verificarCodigo() {
     BB.codigo = []; setTimeout(pintarCasilleros, 500);
     return;
   }
-  if (BB.progreso.encontrados.includes(mundo.id)) {
+  if (BB.desbloqueado(id)) {
     BB.audio.sonar('error');
     msg.className = 'mensaje'; msg.textContent = T.codigo_repetido;
     BB.codigo = []; setTimeout(pintarCasilleros, 500);
     return;
   }
-  BB.progreso.encontrados.push(mundo.id);
+  if (!BB.progreso.encontrados.includes(mundo.id)) BB.progreso.encontrados.push(mundo.id);
+  BB.progreso.desbloqueados.push(id);
+  BB.guardar();
   $('casilleros').classList.add('ok');
   BB.audio.sonar('desbloqueo');
   msg.className = 'mensaje';
-  msg.textContent = `SEÑAL DE ${mundo.nombre.toUpperCase()} RECUPERADA`;
-  const nuevos = (mundo.variantes || []).filter((id) => BB.datos.porId[id] && !BB.desbloqueado(id));
-  nuevos.forEach((id) => BB.progreso.desbloqueados.push(id));
-  BB.guardar();
-  if (nuevos.length) {
-    // se muestran de a uno: al cerrar la primera ficha aparece la segunda
-    const mostrar = (i) => BB.mostrarFicha(nuevos[i], {
-      revelar: true,
-      aviso: nuevos.length > 1 ? `¡NUEVA VERSIÓN! ${i + 1}/${nuevos.length}` : '¡NUEVA VERSIÓN!',
-      alCerrar: i + 1 < nuevos.length ? () => mostrar(i + 1) : null
-    });
-    setTimeout(() => mostrar(0), 500);
-  }
+  msg.textContent = `¡${BB.datos.porId[id].nombre.toUpperCase()} DESBLOQUEADO!`;
+  setTimeout(() => BB.mostrarFicha(id, { revelar: true, aviso: '¡NUEVA VERSIÓN!' }), 500);
   BB.codigo = [];
   setTimeout(pintarCasilleros, 900);
 }
@@ -400,7 +404,11 @@ function mostrarResultado(res, combate) {
     if (combate.tipo === 'mundo' && !BB.progreso.ganados.includes(combate.mundo.id)) {
       BB.progreso.ganados.push(combate.mundo.id);
       nuevo = BB.senal() - 1;
-      txt = `Segmento de señal recuperado en ${combate.mundo.nombre}.` + (BB.senal() >= 8 ? ' ¡La señal está completa! El núcleo del Virus está abierto.' : '');
+      const i = BB.datos.mundos.indexOf(combate.mundo);
+      const sig = BB.datos.mundos[i + 1];
+      txt = `Segmento de señal recuperado en ${combate.mundo.nombre}.` +
+        (sig ? ` ¡Se abrió el ${sig.nombre}!` : '') +
+        (BB.senal() >= 8 ? ' ¡La señal está completa! El núcleo del Virus está abierto.' : '');
     } else if (combate.tipo === 'final') {
       const primera = !BB.progreso.virusVencido;
       BB.progreso.virusVencido = true;

@@ -36,24 +36,34 @@ bitsy-battle/
 
 ## Códigos de cada página
 
-Estos son los 4 símbolos que hay que imprimir **al lado de Luca y Donna** en cada escena:
+Cada Bitsy tiene su propio código de 3 símbolos, impreso **junto al texto de Bitsy** en cada página (dos códigos por página):
 
 | Página | Mundo | Código | Desbloquea |
 | --- | --- | --- | --- |
-| 1 | Mario | ▲ ● ✦ ▲ | Bitsy Mario y Bitsy Luigi |
-| 2 | Batman | ▲ ✖ ■ ■ | Bitsy Batman y Bitsy Robin |
-| 3 | Scooby-Doo | ▲ ▲ ♥ ▲ | Bitsy Dafne y Bitsy Fred |
-| 4 | Hello Kitty | ✦ ✖ ■ ✦ | Bitsy Hello Kitty y Bitsy Keroppi |
-| 5 | Los Simpsons | ♥ ▲ ✦ ■ | Bitsy Lisa Simpson y Bitsy Bart |
-| 6 | Pucca y Garu | ✦ ▲ ■ ✖ | Bitsy Puca y Bitsy Garu |
-| 7 | Dragon Ball | ● ♥ ✦ ✦ | Bitsy Goku y Bitsy Vegeta |
-| 8 | Harry Potter | ✦ ✖ ■ ✖ | Bitsy Harry Potter y Bitsy Ron Weasley |
+| 1 | Mario | □ △ ○ | Bitsy Mario |
+| 1 | Mario | ♡ ○ △ | Bitsy Luigi |
+| 2 | Hello Kitty | ✧ ♡ ✖ | Bitsy Hello Kitty |
+| 2 | Hello Kitty | ✖ □ ✧ | Bitsy Keroppi |
+| 3 | Scooby-Doo | ○ ✖ △ | Bitsy Dafne |
+| 3 | Scooby-Doo | △ ♡ ○ | Bitsy Fred |
+| 4 | Batman | ♡ ✧ ✖ | Bitsy Batman |
+| 4 | Batman | □ ✖ ♡ | Bitsy Robin |
+| 5 | Los Simpsons | □ ♡ ○ | Bitsy Lisa Simpson |
+| 5 | Los Simpsons | ✧ ○ □ | Bitsy Bart |
+| 6 | Dragon Ball | ○ □ ♡ | Bitsy Goku |
+| 6 | Dragon Ball | △ □ ♡ | Bitsy Vegeta |
+| 7 | Harry Potter | △ ✖ ✧ | Bitsy Harry Potter |
+| 7 | Harry Potter | ○ ✧ △ | Bitsy Ron Weasley |
+| 8 | Pucca y Garu | △ ○ ✖ | Bitsy Puca |
+| 8 | Pucca y Garu | ✖ ○ ♡ | Bitsy Garu |
 
-**Código maestro (modo demo):** `✖ ✖ ✖ ✖` desbloquea todas las páginas, todos los Bitsies y la batalla final. Para la entrega conviene cambiarlo o no mostrarlo.
+Los códigos solo desbloquean versiones de Bitsy. Los mundos de la campaña se juegan **en orden**: el primero está abierto y ganar cada batalla abre el siguiente. Con los 8 ganados se abre la batalla final.
+
+**Código maestro (modo demo):** `○ ○ ○` desbloquea todas las páginas, todos los Bitsies y la batalla final. Para la entrega conviene cambiarlo o no mostrarlo.
 
 ## Cómo cambiar cosas
 
-**Un código:** en `data/mundos.json`, cambiá `"codigo"` del mundo. Usá solo ■ ▲ ● ✦ ♥ ✖ y que no se repita con otro mundo. El maestro está en `"codigo_maestro"`.
+**Un código:** en `data/mundos.json`, cada mundo tiene `"codigos"`: `{ "id del Bitsy": "3 símbolos" }`. Usá solo los símbolos de `"simbolos"` (□ △ ○ ♡ ✧ ✖, que son las teclas de la app) y que no se repita con ningún otro. El maestro está en `"codigo_maestro"`.
 
 **El orden de las páginas:** cambiá `"pagina"` y el orden de la lista en `mundos.json`.
 

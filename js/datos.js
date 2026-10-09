@@ -26,6 +26,7 @@ BB.cargarDatos = async function () {
   BB.datos.mundos = m.mundos;
   BB.datos.final = m.final;
   BB.datos.maestro = m.codigo_maestro || '';
+  BB.datos.simbolos = m.simbolos || ['□', '△', '○', '♡'];
   BB.datos.textos = t;
 };
 
