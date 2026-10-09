@@ -2,7 +2,7 @@
 // Botón ✎ → se saca una captura del juego → escribís la observación → Enter la guarda.
 // Las notas quedan en el navegador (IndexedDB) hasta que las descargás como un archivo .json.
 window.BB = window.BB || {};
-BB.VERSION = '0.9';
+BB.VERSION = '1.0';
 
 BB.feedback = (function () {
   const $ = (id) => document.getElementById(id);
@@ -179,6 +179,9 @@ BB.feedback = (function () {
   }
 
   function armar() {
+    // para la entrega el botón ✎ queda oculto. Se vuelve a ver agregando ?feedback a la dirección
+    // (por ejemplo https://…/Bitsy-Battle/?feedback)
+    if (!/[?&]feedback\b/.test(location.search)) { $('btn-feedback').hidden = true; return; }
     $('btn-feedback').onclick = abrirPanel;
     $('fb-guardar').onclick = guardar;
     $('fb-cancelar').onclick = cerrar;

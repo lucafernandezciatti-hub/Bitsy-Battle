@@ -90,7 +90,7 @@ El script imprime el valor `"alto"` de cada uno: copialo en `data/bitsies.json`.
 
 ## Feedback
 
-El botón ✎ (arriba, al lado del ♪) sirve para dejar notas mientras probás el juego:
+El botón ✎ (arriba, al lado del ♪) sirve para dejar notas mientras probás el juego. **Para la entrega está oculto**: aparece solo si abrís la app con `?feedback` al final de la dirección (por ejemplo `https://lucafernandezciatti-hub.github.io/Bitsy-Battle/?feedback`).
 
 1. Tocá ✎: la app saca una captura de lo que se ve en ese momento.
 2. Escribí la observación y apretá **Enter** (Shift+Enter baja de línea, Esc cierra).
